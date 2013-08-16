@@ -1,0 +1,23 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>res/application-exit.svgz</file>
+    <file>res/arrow-down-double.svgz</file>
+    <file>res/arrow-up.svgz</file>
+    <file>res/arrow-up-double.svgz</file>
+    <file>res/checkbox.svgz</file>
+    <file>res/help-about.svgz</file>
+    <file>res/list-add.svgz</file>
+    <file>res/media-playback-start.svgz</file>
+    <file>res/system-shutdown.svgz</file>
+    <file>res/media-skip-forward.svgz</file>
+    <file>res/copyIcon.png</file>
+    <file>res/moveIcon.png</file>
+    <file>res/pauseIcon.png</file>
+    <file>res/arrow-down.svgz</file>
+    <file>res/media-playback-pause.svgz</file>
+    <file>res/process-stop.svgz</file>
+  </qresource>
+  <qresource prefix="logo">
+    <file>res/tux-transfer.png</file>
+  </qresource>
+</RCC>
