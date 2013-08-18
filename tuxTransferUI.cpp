@@ -1,10 +1,10 @@
-#include "ui/aboutDialog.h"
+#include "ui/copyDialog.h"
 
 int main(int argc, char *argv[])
  {
      QApplication app(argc, argv);
      QDialog *dialog = new QDialog;
-     Ui::aboutDialog ui;
+     Ui::copyDialog ui;
      ui.setupUi(dialog);
 
      dialog->show();
