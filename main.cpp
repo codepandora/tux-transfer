@@ -10,14 +10,10 @@
 int main(int argc, char *argv[])
  {
      QApplication app(argc, argv);
-     QDialog *dialog = new QDialog;
-     Ui::copyDialog ui;
-     ui.setupUi(dialog);
-
-     dialog->show();
+     app.setAttribute(Qt::AA_DontShowIconsInMenus, false);    
 
      TuxTray *icon = new TuxTray;
-     icon->show();
+      icon->show();
 
      return app.exec();
  }

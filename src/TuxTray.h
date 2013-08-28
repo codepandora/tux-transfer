@@ -6,29 +6,20 @@
 #ifndef TUX_TRAY_H
 #define TUX_TRAY_H
 
-
-#include <QWidget> 
+#include <QDialog> 
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
 #include <QCloseEvent>
+
  
-class QMenu; //Forward declaring the QMenu class
- 
- 
-namespace Ui 
-{
-    class TuxTray;
-}
- 
- 
-class TuxTray : public QWidget
+class TuxTray : public QDialog
 {
     Q_OBJECT
  
  
 public:
-    explicit TuxTray(QWidget *parent = 0);
+    explicit TuxTray(QDialog *parent = 0);
     ~TuxTray();
  
  
@@ -37,9 +28,6 @@ private:
     void createTrayIcon();
     void setIcon();
     void closeEvent(QCloseEvent *); // Overriding the window's close event
- 
- 
-    Ui::TuxTray *ui;
  
  
     QSystemTrayIcon *trayIcon;

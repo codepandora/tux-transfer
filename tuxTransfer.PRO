@@ -1,5 +1,6 @@
 TEMPLATE = app
 QT += widgets
+HEADERS += src/TuxTray.h
 SOURCES += main.cpp \
            src/TuxTray.cpp
 RESOURCES = assets.qrc

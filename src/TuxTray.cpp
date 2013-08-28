@@ -7,65 +7,86 @@
 #include "../ui/optionsDialog.h"
 #include "../ui/aboutDialog.h"
 
-TuxTray::TuxTray(QWidget * parent) : QWidget(parent),ui(new Ui::TuxTray)
+TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
 {
-
-    //initialize icon properties
-    systrayMenu         = new QMenu();
-    copyMenu		= new QMenu();
-
-    actionMenuAbout	        = new QAction(this);
-    actionMenuQuit		= new QAction(this);
-    actionOptions		= new QAction(this);
-   
-    /* *****  Set menu text ***** */
-    actionMenuAbout->setText("About");
-    actionMenuQuit->setText("Quit");
-    actionOptions->setText("Options");
-    copyMenu->setTitle("Copy/Move");
+  Ui::optionsDialog ui;
+  ui.setupUi(this);
+ 
+    createActions();
+    createTrayIcon();
+    setIcon();
     
-    setToolTip("Tux Transfer");
-    
-    setIcon(QIcon(":/logo/res/tux-transfer.png"));
-   
-    //connect the action
-  //connect(&timerCheckSetTooltip, &QTimer::timeout, this, &TuxTray::checkSetTooltip);
-    
-    connect(actionMenuQuit, &QAction::triggered, this, &TuxTray::hide);
-    //connect(actionMenuQuit, &QAction::triggered, this, &TuxTray::quit);
-    //    connect(actionMenuAbout, &QAction::triggered, this, &TuxTray::showHelp);
-    // connect(actionOptions, &QAction::triggered, this, &TuxTray::showOptions);
-   
-    //display the icon
-   
-    systrayMenu->addMenu(copyMenu);
-    systrayMenu->addAction(actionOptions);
-    systrayMenu->addAction(actionMenuAbout);
-    systrayMenu->addAction(actionMenuQuit);
+    trayIcon->setVisible(true);
 
-    systrayMenu->insertSeparator(actionOptions);
-    
-    setContextMenu(systrayMenu);
-    // updateTuxTray();
+    if(trayIcon->isVisible() && QSystemTrayIcon::isSystemTrayAvailable())  
+      trayIcon->setToolTip("Visible");
+    else
+      trayIcon->setToolTip("Invisible");
 
-    show();
+    trayIcon->show(); 
 }
 
 /// Hide and destroy the icon in the systray
 TuxTray::~TuxTray()
 {
-    delete actionMenuQuit;
-    delete actionMenuAbout;
-    delete actionOptions;
-    delete systrayMenu;
-    delete copyMenu;
+    delete trayIcon;
+    delete trayIconMenu;
+    delete open;
+    delete close;
 }
 
-
-/* **show a message linked to the systray icon** 
-void TuxTray::showSystrayMessage(const QString& text)
+void TuxTray::createActions()
 {
-    showMessage(tr("Information"),text,QSystemTrayIcon::Information,0);
+    open = new QAction(tr("&Open"), this);
+    connect(open, SIGNAL(triggered()), this, SLOT(show()));
+ 
+ 
+    close = new QAction(tr("&Quit"), this);
+    connect(close, SIGNAL(triggered()), qApp, SLOT(quit()));
 }
 
-*/
+void TuxTray::createTrayIcon()
+{
+    trayIconMenu = new QMenu(this);
+ 
+ 
+    trayIconMenu->addAction(open);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(close);
+ 
+ 
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(trayIconMenu);
+ 
+ 
+    connect(
+            trayIcon,
+            SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            this,
+            SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason))
+           );
+}
+
+void TuxTray::setIcon()
+{
+  QIcon icon;
+  icon.addFile(QStringLiteral(":/icons/res/copyIcon.png"));
+    trayIcon->setIcon(icon);
+}
+
+void TuxTray::trayIconClicked(QSystemTrayIcon::ActivationReason reason)
+{
+    if(reason == QSystemTrayIcon::Trigger)
+        this->show();
+}
+
+void TuxTray::closeEvent(QCloseEvent *event)
+{
+    if (trayIcon->isVisible()) {
+        trayIcon->showMessage(tr("Tux Transfer"),
+        tr("Tux Transfer is now running..."));
+        hide();
+ 
+        event->ignore(); // Don't let the event propagate to the base class
+    }
+}
