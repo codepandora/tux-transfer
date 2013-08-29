@@ -7,6 +7,9 @@
 #include<string.h>
 #include<malloc.h>
 #include<dirent.h>
+#define NEWDIR ( dir* ) malloc( sizeof( dir ) )
+#define NEWFILE ( file* ) malloc( sizeof( file ) )
+
 using namespace std;
 
 struct dir
@@ -27,6 +30,8 @@ struct file
 	struct file* nextFile;
 };
 
+
+
 class copyInstance
 {	
 	char* source;
@@ -37,15 +42,13 @@ class copyInstance
 	dir* dirHeadPtr;
 	file* fileHeadPtr;
 	const int IS_FILE;
-	const int IS_DIR;
+	const int IS_DIR;	
+	file* tmpFilePtr;
+	dir*  tmpDirPtr;
 
 	void initializeSourceDirStructure();
-
-
+	dir* mapSubDirs(const char*);
 	bool is_dir( const char* );
-	
-
-
 	bool is_file( const char* );
 	
 	public:
