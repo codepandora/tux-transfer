@@ -7,6 +7,7 @@
 #include<string.h>
 #include<malloc.h>
 #include<dirent.h>
+#include<stdlib.h>
 #define NEWDIR ( dir* ) malloc( sizeof( dir ) )
 #define NEWFILE ( file* ) malloc( sizeof( file ) )
 
@@ -15,9 +16,9 @@ using namespace std;
 struct dir
 {
 	char* dirPath;
-	char* direName;
-	struct dir* subdirs;
-	struct dir* files;
+	char* dirName;
+	struct dir* subDirs;
+	struct file* files;
 	struct dir* nextDir;
 };
 
@@ -40,16 +41,14 @@ class copyInstance
 	int sourceType;
 	long totalBytesToCopy;
 	dir* dirHeadPtr;
-	file* fileHeadPtr;
-	const int IS_FILE;
-	const int IS_DIR;	
+	file* fileHeadPtr;	
 	file* tmpFilePtr;
 	dir*  tmpDirPtr;
-
+	char* command;
 	void initializeSourceDirStructure();
-	dir* mapSubDirs(const char*);
-	bool is_dir( const char* );
-	bool is_file( const char* );
+	void mapSubFileStructure(dir*);
+	bool isDir( const char* );
+	bool isFile( const char*, long* );
 	
 	public:
 		
