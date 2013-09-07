@@ -32,11 +32,11 @@ private:
  
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
+    QDialog *aboutDialog;
  
- 
-    QAction *open;
-    QAction *close;
- 
+    QAction *options;
+    QAction *about;
+    QAction *quit;
  
 private slots:
     void trayIconClicked(QSystemTrayIcon::ActivationReason);

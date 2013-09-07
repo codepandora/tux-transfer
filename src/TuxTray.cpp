@@ -11,6 +11,10 @@ TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
 {
   Ui::optionsDialog ui;
   ui.setupUi(this);
+
+  Ui::aboutDialog ui_about;
+  aboutDialog = new QDialog();
+  ui_about.setupUi(aboutDialog);
  
     createActions();
     createTrayIcon();
@@ -31,18 +35,21 @@ TuxTray::~TuxTray()
 {
     delete trayIcon;
     delete trayIconMenu;
-    delete open;
-    delete close;
+    delete options;
+    delete about;
+    delete quit;
 }
 
 void TuxTray::createActions()
 {
-    open = new QAction(tr("&Open"), this);
-    connect(open, SIGNAL(triggered()), this, SLOT(show()));
+    options = new QAction(tr("&Options"), this);
+    connect(options, SIGNAL(triggered()), this, SLOT(show()));
  
+    about = new QAction(tr("&About"), this);
+    connect(about, SIGNAL(triggered()), aboutDialog, SLOT(show()));
  
-    close = new QAction(tr("&Quit"), this);
-    connect(close, SIGNAL(triggered()), qApp, SLOT(quit()));
+    quit = new QAction(tr("&Quit"), this);
+    connect(quit, SIGNAL(triggered()), qApp, SLOT(quit()));
 }
 
 void TuxTray::createTrayIcon()
@@ -50,9 +57,10 @@ void TuxTray::createTrayIcon()
     trayIconMenu = new QMenu(this);
  
  
-    trayIconMenu->addAction(open);
+    trayIconMenu->addAction(options);
+    trayIconMenu->addAction(about);
     trayIconMenu->addSeparator();
-    trayIconMenu->addAction(close);
+    trayIconMenu->addAction(quit);
  
  
     trayIcon = new QSystemTrayIcon(this);
