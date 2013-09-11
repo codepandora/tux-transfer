@@ -238,7 +238,7 @@ copyInstance::copyInstance( const char* src,  const char* dest)
 
 int main( void )
 {
-	const char* src = "/home/droidboyjr/Pictures";
+	const char* src = "/home/droidboyjr/";
 	const char* dest = "/home/droidboyjr/Desktop";
 	copyInstance ci( src,dest );
 	return 1;
