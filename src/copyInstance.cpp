@@ -3,6 +3,7 @@
 
 copyInstance::copyInstance( const char* src,  const char* dest)
 {
+	printf("%s\n",src );
 	dirHeadPtr = NULL;
 	fileHeadPtr = NULL;
 	tmpDirPtr = NULL;
@@ -11,9 +12,9 @@ copyInstance::copyInstance( const char* src,  const char* dest)
 	int StrPointerPosition = 0;
 	int srcPathLen;
 	int lastPositionOfPath = 0;
-	const char* commandPart1 = "ls -R ";
-	const char* commandPart2 = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' > /home/droidboyjr/Documents/op ";
-	source = ( char* )malloc( sizeof( strlen( src )+1 ) );
+	const char* commandPart1 = "ls -Rr ";
+	const char* commandPart2 = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' > ../tmp/tmp.list ";
+	source = ( char* )malloc( sizeof( strlen( src )+2 ) );
 	strcpy( source, src );
 	char* command = ( char* ) malloc( sizeof( src )+ sizeof( commandPart1 )+ sizeof( commandPart2 )+ 2);
 	strcpy( command, commandPart1 );
@@ -21,6 +22,12 @@ copyInstance::copyInstance( const char* src,  const char* dest)
 	command = strcat( command,commandPart2 );
 	cout<<endl<<command<<endl;
 	system( command );
+	FILE* srcList = fopen("../tmp/tmp.list", "r");
+	char sourceFullPath[1096];
+	while( fgets( sourceFullPath, sizeof( sourceFullPath ), srcList )){
+		printf( "\n%s-%s" ,src, sourceFullPath );
+	}
+
 	/*destination = ( char* )malloc( sizeof( strlen( dest )+1 ) );
 	srcPathLen = strlen( src );
 	for( ; StrPointerPosition< srcPathLen; StrPointerPosition++)
@@ -231,8 +238,8 @@ copyInstance::copyInstance( const char* src,  const char* dest)
 
 int main( void )
 {
-	const char* src = "/media/general";
-		const char* dest = "/home/droidboyjr/Desktop";
+	const char* src = "/home/droidboyjr/Pictures";
+	const char* dest = "/home/droidboyjr/Desktop";
 	copyInstance ci( src,dest );
 	return 1;
 
