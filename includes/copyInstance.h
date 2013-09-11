@@ -8,6 +8,7 @@
 #include<malloc.h>
 #include<dirent.h>
 #include<stdlib.h>
+#include<fstream>
 #define NEWDIR ( dir* ) malloc( sizeof( dir ) )
 #define NEWFILE ( file* ) malloc( sizeof( file ) )
 

@@ -3,232 +3,78 @@
 
 copyInstance::copyInstance( const char* src,  const char* dest)
 {
-	printf("%s\n",src );
-	dirHeadPtr = NULL;
-	fileHeadPtr = NULL;
-	tmpDirPtr = NULL;
-	tmpFilePtr = NULL;		
-	totalBytesToCopy = 0;	
-	int StrPointerPosition = 0;
-	int srcPathLen;
-	int lastPositionOfPath = 0;
-	const char* commandPart1 = "ls -Rr ";
-	const char* commandPart2 = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' > ../tmp/tmp.list ";
-	source = ( char* )malloc( sizeof( strlen( src )+2 ) );
-	strcpy( source, src );
-	char* command = ( char* ) malloc( sizeof( src )+ sizeof( commandPart1 )+ sizeof( commandPart2 )+ 2);
-	strcpy( command, commandPart1 );
-	command = strcat( command, source );
-	command = strcat( command,commandPart2 );
-	cout<<endl<<command<<endl;
-	system( command );
-	FILE* srcList = fopen("../tmp/tmp.list", "r");
-	char sourceFullPath[1096];
-	while( fgets( sourceFullPath, sizeof( sourceFullPath ), srcList )){
-		printf( "\n%s-%s" ,src, sourceFullPath );
+	string source( src ), destination( dest ), resultantDestination;
+
+	int srcLen = source.length();
+	if( isDir( source.c_str() ) )	//if source is a directory, create the same named directory at destination first
+	{
+		int position;
+		for( int cnt = 0; cnt < srcLen-2; cnt++ )
+		{
+			if( source.at( cnt )== '/' )
+			{
+				position  = cnt;
+			}
+		}
+		string addToDestination = source;
+		addToDestination.replace( 0, position, "" );
+		destination.append( addToDestination );
+		mkdir( destination.c_str(), 0777 );
 	}
 
-	/*destination = ( char* )malloc( sizeof( strlen( dest )+1 ) );
-	srcPathLen = strlen( src );
-	for( ; StrPointerPosition< srcPathLen; StrPointerPosition++)
-	{
-		if( *( src+StrPointerPosition ) == '/' )
+	if( source.at( source.length()-1 )!='/' )
+		source.append("/");
+	if( destination.at( destination.length()-1 )!='/' )
+		destination.append("/");
+	
+	string finalCommand;
+	string commandStart = "ls -Rr ";
+	string commandEnd = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' > ../tmp/tmp.list";
+	finalCommand = commandStart;
+	finalCommand.append( source );
+	finalCommand.append( commandEnd );
+	system( finalCommand.c_str() );
+	ifstream fileList( "../tmp/tmp.list" );
+	string tmp;
+	while( getline( fileList, tmp ) ){
+		//printf( "\n%s-%s" ,src, tmp.c_str() );
+		if( isDir( tmp.c_str() ) )
 		{
-			lastPositionOfPath = StrPointerPosition;
+			resultantDestination = tmp;
+			resultantDestination.replace( 0, srcLen-1, destination);
+			cout<< "result"<<resultantDestination<<endl;
+			mkdir( resultantDestination.c_str(), 0777 );
 		}
 	}
-	printf( "%d", lastPositionOfPath);
-	char tmp[ lastPositionOfPath+2 ];
-	for( StrPointerPosition = 0; StrPointerPosition <= lastPositionOfPath; StrPointerPosition++)
-	{
-		tmp[ StrPointerPosition ] = *( src + StrPointerPosition );
-	}
-	tmp[ StrPointerPosition+1 ] = '\0';
-	pathToSource = ( char* )malloc( lastPositionOfPath+1 );
-	strcpy( pathToSource, tmp );
-	printf( "\n\n %s is path \n",pathToSource );
-	strcpy( source, src );
-	strcpy( destination, dest );
-	if( isDir( source ))
-	{
-		dirHeadPtr = NEWDIR;
-		dirHeadPtr->dirPath = source;
-		tmpDirPtr = dirHeadPtr;
-		//mapSubFileStructure( tmpDirPtr );
-
-	}
-	else
-	{
-		fileHeadPtr = NEWFILE;
-		fileHeadPtr->filePath = source;
-	}
-	cout<<endl<<" totalBytesToCopy "<<totalBytesToCopy<< endl;
-*/
 }
 
+bool copyInstance::isDir( const char* path )
+{
+	struct stat sourcePathStat;
+	int status;
+	status = stat( path, &sourcePathStat);
+		if( S_ISDIR( sourcePathStat.st_mode ) )
+			return true;
+		else
+			return false;
+}
 
-
-/*
-	void copyInstance::initializeSourceDirStructure()
-	{
-		file* tmpFilePtr = NULL;
-		dir* tmpDirPtr = NULL;
-		DIR* dirPtr;
-		struct dirent *dirEnt;
-		long* fileSize = new long;
-		int fileCnt = 0, dirCnt = 0;
-		if( NULL != ( dirPtr = opendir( this->tmpDirPtr->dirPath ) ) )
+bool copyInstance::isFile( const char* path, long* size )
+{
+	struct stat sourcePathStat;
+	int status;
+	status = stat( path, &sourcePathStat);
+		if( S_ISREG( sourcePathStat.st_mode ) )
 		{
-			while(NULL != (dirEnt = readdir( dirPtr ) ) )
-			{
-				char* fname = new char[ strlen( dirEnt->d_name ) + 1 ];
-				strcpy( fname, dirEnt->d_name );
-				char* completePath = ( char* ) malloc( strlen( dirEnt->d_name ) + strlen( source ) + 2 );
-				strcpy( completePath,source );
-				completePath = strcat( completePath, "/" );
-				completePath = strcat( completePath, dirEnt->d_name );
-				
-				if( isFile( completePath, fileSize ) )
-				{
-					if( NULL == this->tmpDirPtr->files )
-					{
-						tmpFilePtr = NEWFILE;
-						memset( tmpFilePtr, 0, sizeof( file ) );
-						tmpFilePtr->fileName = fname;
-						tmpFilePtr->filePath = completePath;
-						tmpFilePtr->fileSize = *fileSize;
-						this->tmpDirPtr->files = tmpFilePtr;	
-						this->totalBytesToCopy += *fileSize;
-					}			
-					else
-					{
-						tmpFilePtr->nextFile = NEWFILE;
-						tmpFilePtr = tmpFilePtr->nextFile;
-						tmpFilePtr->fileName = fname;
-						tmpFilePtr->filePath = completePath;
-						tmpFilePtr->fileSize = *fileSize;
-						this->totalBytesToCopy += *fileSize;
-					}
-				}
-				else
-				{
-					if( NULL == this->tmpDirPtr->subDirs )
-					{
-						tmpDirPtr = NEWDIR;
-						memset( tmpDirPtr, 0, sizeof( dir ) );
-						tmpDirPtr->dirPath = completePath;
-						tmpDirPtr->dirName = fname;
-						this->tmpDirPtr->subDirs = tmpDirPtr;		
-					}
-					else
-					{
-						tmpDirPtr->nextDir = NEWDIR;
-						tmpDirPtr = tmpDirPtr->nextDir;	
-						memset( tmpDirPtr, 0, sizeof( dir ) );
-						tmpDirPtr->dirPath = completePath;
-						tmpDirPtr->dirName = fname;
-					}
-				}
-			}
+			*size = ( long ) sourcePathStat.st_size;
+			return true;
 		}
-		
-	}
-*/
-	void copyInstance::mapSubFileStructure( dir* parentDir )
-	{
-		file* tmpFilePtr = NULL;
-		dir* tmpDirPtr = NULL;
-		DIR* dirPtr;
-		struct dirent *dirEnt;
-		long* fileSize = new long;
-		int fileCnt = 0, dirCnt = 0;
-		if( NULL != ( dirPtr = opendir( parentDir->dirPath ) ) )
+		else
 		{
-			while(NULL != (dirEnt = readdir( dirPtr ) ) )
-			{
-				char* fname = new char[ strlen( dirEnt->d_name ) + 1 ];
-				strcpy( fname, dirEnt->d_name );
-				char* completePath = ( char* ) malloc( strlen( dirEnt->d_name ) + strlen( parentDir->dirPath ) + 2 );
-				strcpy( completePath, parentDir->dirPath );
-				completePath = strcat( completePath, "/" );
-				completePath = strcat( completePath, dirEnt->d_name );
-				
-				if( isFile( completePath, fileSize ) )
-				{
-					if( NULL == parentDir->files )
-					{
-						tmpFilePtr = NEWFILE;
-						memset( tmpFilePtr, 0, sizeof( file ) );
-						tmpFilePtr->fileName = fname;
-						tmpFilePtr->filePath = completePath;
-						tmpFilePtr->fileSize = *fileSize;
-						parentDir->files = tmpFilePtr;	
-						this->totalBytesToCopy += *fileSize;
-					}			
-					else
-					{
-						tmpFilePtr->nextFile = NEWFILE;
-						tmpFilePtr = tmpFilePtr->nextFile;
-						tmpFilePtr->fileName = fname;
-						tmpFilePtr->filePath = completePath;
-						tmpFilePtr->fileSize = *fileSize;
-						this->totalBytesToCopy += *fileSize;
-					}
-				}
-				else
-				{
-					if( NULL == parentDir->subDirs )
-					{
-						tmpDirPtr = NEWDIR;
-						memset( tmpDirPtr, 0, sizeof( dir ) );
-						tmpDirPtr->dirPath = completePath;
-						tmpDirPtr->dirName = fname;
-						parentDir->subDirs = tmpDirPtr;
-						mapSubFileStructure( tmpDirPtr );
-					}
-					else
-					{
-						tmpDirPtr->nextDir = NEWDIR;
-						tmpDirPtr = tmpDirPtr->nextDir;	
-						memset( tmpDirPtr, 0, sizeof( dir ) );
-						tmpDirPtr->dirPath = completePath;
-						tmpDirPtr->dirName = fname;
-						mapSubFileStructure( tmpDirPtr );
-					}
-				}
-			}
-		}
+			*size = 0;
+			return false;
 	}
-
-	bool copyInstance::isDir( const char* path )
-	{
-		struct stat sourcePathStat;
-		int status;
-		status = stat( path, &sourcePathStat);
-			if( S_ISDIR( sourcePathStat.st_mode ) )
-				return true;
-			else
-				return false;
-	}
-
-
-	bool copyInstance::isFile( const char* path, long* size )
-	{
-		struct stat sourcePathStat;
-		int status;
-		status = stat( path, &sourcePathStat);
-			if( S_ISREG( sourcePathStat.st_mode ) )
-			{
-				*size = ( long ) sourcePathStat.st_size;
-				return true;
-			}
-			else
-			{
-				*size = 0;
-				return false;
-			}
-	}
-
+}
 
 
 
@@ -238,8 +84,8 @@ copyInstance::copyInstance( const char* src,  const char* dest)
 
 int main( void )
 {
-	const char* src = "/home/droidboyjr/";
-	const char* dest = "/home/droidboyjr/Desktop";
+	const char* src = "/home/droidboyjr/Pictures/";
+	const char* dest = "/home/droidboyjr/Desktop/tmp";
 	copyInstance ci( src,dest );
 	return 1;
 
