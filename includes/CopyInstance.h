@@ -35,7 +35,7 @@ class copyInstance
 		ofstream writerStream;
 
 	public:
-		copyInstance( const char*,  const char* );
+		copyInstance( const char*[], int, const char* );
 
 };
 
