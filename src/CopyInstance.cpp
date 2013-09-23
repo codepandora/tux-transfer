@@ -100,7 +100,8 @@ void copyInstance::copyWork( string sourcePath, string destination )
 				{
 					writerStream.write( buffer, 512 );
 				}
-				//reader();
+				//reader();   
+				
 			}
 		}
 }
@@ -155,9 +156,9 @@ bool copyInstance::isFile( const char* path, long* size )
 
 int main( void )
 {
-	const char* srcs[] = {"/home/droidboyjr/Pictures/background.jpg","/home/droidboyjr/Pictures/bans"};
+	const char* srcs[] = {"/home/droidboyjr/Pictures/walls","/home/droidboyjr/Pictures/background.jpg","/home/droidboyjr/Pictures/bans"};
 	const char* dest = "/home/droidboyjr/Documents/fresh";
-	copyInstance ci( srcs, 2, dest );
+	copyInstance ci( srcs, 3, dest );
 	return 1;
 
 }
