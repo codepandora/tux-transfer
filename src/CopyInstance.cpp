@@ -37,7 +37,7 @@ copyInstance::copyInstance( const char* src[], int numberOfSources, const char* 
 			
 			string finalCommand;
 			string commandStart = "ls -Rr ";
-			string commandEnd = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' >> ../tmp/tmp.list";
+			string commandEnd = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' >> ../tmp/001tmp.list";
 			finalCommand = commandStart;
 			finalCommand.append( source );
 			finalCommand.append( commandEnd );
