@@ -50,7 +50,7 @@ const char* ProgressTracker::getTmpFileName( int index )
 
 }
 
-long ProgressTracker::getNextFileNameIndexToCopy( int index )
+long ProgressTracker::getCurrentlyCopyingFileNameIndex( int index )
 {
 	long fileNameLineNumber = 0;
 	fileReader.seekg( (index * recordLen) + lineNumberOffset );
@@ -66,7 +66,7 @@ long ProgressTracker::getOffsetToCopyFrom( int index )
 	return offsetToCopyFrom;
 }
 
-void ProgressTracker::putTmpFileName( int index, const char* fileName )
+void ProgressTracker::putTmpFileName( const char* fileName )
 {
 
 }

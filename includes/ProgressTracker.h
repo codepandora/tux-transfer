@@ -5,40 +5,36 @@
 #include<string.h>
 #include<fstream>
 
-struct record
-{
-	char name[10];
-	unsigned long offset;
-};
-
-
 using namespace std;
 
 class ProgressTracker
 {
-	const static char* progressTrackerFile;
-	static bool instantiated;
-	static ProgressTracker* progressTrackerPtr;
-	static bool fileExists( const char* );
-	const int tmpFileNameLen;
-	const int lineNumberLen;
-	const int lineNumberOffset;
-	const int offsetStorageLen;
-	const int offsetStorageOffset;
-	int recordLen;	
-	ifstream fileReader;
-	ofstream fileWriter;
-	ProgressTracker();
-	~ProgressTracker();
 
 	public:
-		static ProgressTracker* getInstance();
-		const char* getTmpFileName( int );
-		long getNextFileNameIndexToCopy( int );
-		long getOffsetToCopyFrom( int );
-		void putTmpFileName( int, const char* );
-		void putNextFileNameIndexToCopy( int, long );
-		void putOffsetToCopyFrom( int, long );
+		static ProgressTracker* getInstance();	// class is singlton
+		const char* getTmpFileName( int );	// get tmpfile name of given index
+		long getCurrentlyCopyingFileNameIndex( int ); // Get line number from tmpFile of file currently being copied
+		long getOffsetToCopyFrom( int );	// get offset till which the curretly file being copied has completed copying
+		void putTmpFileName( const char* );	// make new tmpFile name entry for new copyinstance
+		void putNextFileNameIndexToCopy( int, long );	// set next file index to be copied after last one completed copying	
+		void putOffsetToCopyFrom( int, long );	// update copy progress of current copy process after every successful copy 512kb
+
+	private:
+		const static char* progressTrackerFile;	// file name to store all copying processes' progress
+		static bool instantiated;	// if the class has been instantiated
+		static ProgressTracker* progressTrackerPtr;	// pointer holding only object of class
+		static bool fileExists( const char* );	// check if given file exists
+		const int tmpFileNameLen, // length of tmpFile name
+					lineNumberLen, // length of line number part of record
+					lineNumberOffset, // offset of line number part in a record respective to start of record
+					offsetStorageLen, 
+					offsetStorageOffset; // offset of copied offset part in a record respective to start of record
+		int recordLen, numberOfCopyInstances;	// each record length in progress recording file
+		ifstream fileReader;	// file reading ifstream object 
+		ofstream fileWriter;	// file writing ofstream object
+		ProgressTracker();
+		~ProgressTracker();
+
 };
 
 #endif
