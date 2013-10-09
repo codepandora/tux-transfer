@@ -13,7 +13,7 @@
 #include<boost/thread/thread.hpp>
 #define NEWDIR ( dir* ) malloc( sizeof( dir ) )
 #define NEWFILE ( file* ) malloc( sizeof( file ) )
-
+#define CHUNK_SIZE 512
 using namespace std;
 
 
@@ -21,9 +21,10 @@ class copyInstance
 {		
 
 		char* source, destination, pathToSource, command;
-		char buffer[512];
+		char buffer1[CHUNK_SIZE],buffer2[CHUNK_SIZE];
 		int sourceType;
-		long totalBytesToCopy;
+		unsigned long totalBytesToCopy, buf1Position, buf2Position;
+		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritter,isBuf2BeingWritter fileNotCompleted;
 		void initializeSourceDirStructure();
 		bool isDir( const char* );
 		bool isFile( const char*, long* );
@@ -32,7 +33,7 @@ class copyInstance
 		void reader();
 		void writer();
 		ifstream readerStream;
-		ofstream writerStream;
+		ofstream writerStream1,writeStream2;
 
 	public:
 		copyInstance( const char*[], int, const char* );

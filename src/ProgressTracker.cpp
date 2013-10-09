@@ -92,7 +92,7 @@ void ProgressTracker::putNextFileNameIndexToCopy( int index, long fileNameLineNu
 }
 
 void ProgressTracker::putOffsetToCopyFrom( int index, long offsetToCopyFrom )
-{
+{	
 	fileWriter.seekp( (index * recordLen) + offsetStorageOffset );
 	fileWriter.write( reinterpret_cast<char*>( &offsetToCopyFrom ), offsetStorageLen );
 }

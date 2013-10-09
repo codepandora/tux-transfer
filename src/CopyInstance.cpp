@@ -1,7 +1,7 @@
 
 #include "../includes/CopyInstance.h"
 
-copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest)
+copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest): isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	string source( src[0] ), destination( dest ), resultantDestination, sourcePath;
 	cout<< source.c_str()<< ( sizeof( src )/ sizeof( *src ) )<< endl;
@@ -92,31 +92,75 @@ void copyInstance::copyWork( string sourcePath, string destination )
 				cout<< "result - "<<resultantDestination<<endl;
 				
 
-				ofstream writerStream; //comment this
-				ifstream readerStream; //comment this also and observe
-				writerStream.open( resultantDestination.c_str(), ios::binary );
+				//ofstream writerStream; //comment this
+				//ifstream readerStream; //comment this also and observe
+				writerStream1.open( resultantDestination.c_str(), ios::binary );
+				writerStream2.open( resultantDestination.c_str(), ios::binary );
 				readerStream.open( tmp.c_str(), ios::binary );
-				while( readerStream.read( buffer, 512) )
+				/*while( readerStream.read( buffer, CHUNK_SIZE) )
 				{
-					writerStream.write( buffer, 512 );
+					writerStream.write( buffer, CHUNK_SIZE );
 				}
 				//reader();   
-				
+				*/
 			}
 		}
 }
 
 void copyInstance::writer()
 {
-	writerStream.write( buffer, 512 );
+
+	while( fileNotCompleted )
+	{
+		if( !isBuffer1Free && !isBuf1BeingWritten )
+		{
+			isBuf1BeingWritten = true;
+			writerStream1.seekp( buf1Position );
+			writerStream1.write( buffer1, CHUNK_SIZE );
+			isBuffer1Free = true;
+			isBuf1BeingWritten = false;		
+		}
+
+		if( !isBuffer2Free && !isBuf2BeingWritten )
+		{
+			isBuf2BeingWritten = true;
+			writerStream2.seekp( buf2Position );
+			writerStream2.write( buffer2, CHUNK_SIZE );
+			isBuffer2Free = true;
+			isBuf2BeingWritten = false;		
+		}
+			
+	}
+	
+
 }
+
 
 void copyInstance::reader()
 {
-	while( readerStream.read( buffer, 512) )
-				{
-					writer();
-				}
+	buf1Position = 0;
+	buf2Position = 0;
+	unsigned long CurrentReadPosition = 0;
+	while( fileNotCompleted )
+		{
+			if( isBuffer1Free )
+			{
+				
+				if( !readerStream.read( buffer1, CHUNK_SIZE) )
+					fileNotCompleted = false;
+				buf1Position = currentReadPosition;
+				currentReadPosition += CHUNK_SIZE;
+			}
+
+			if( isBuffer2Free )
+			{
+				
+				if( !readerStream.read( buffer2, CHUNK_SIZE) )
+					fileNotCompleted = false;
+				buf2Position = currentReadPosition;
+				currentReadPosition += CHUNK_SIZE;
+			}
+		}
 }
 
 
