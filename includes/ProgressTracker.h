@@ -30,8 +30,8 @@ class ProgressTracker
 					offsetStorageLen, 
 					offsetStorageOffset; // offset of copied offset part in a record respective to start of record
 		int recordLen, numberOfCopyInstances;	// each record length in progress recording file
-		static ifstream fileReader;	// file reading ifstream object 
-		static ofstream fileWriter;	// file writing ofstream object
+		ifstream fileReader;	// file reading ifstream object 
+		ofstream fileWriter;	// file writing ofstream object
 		ProgressTracker();
 		~ProgressTracker();
 

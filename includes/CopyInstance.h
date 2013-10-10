@@ -21,7 +21,7 @@ class copyInstance
 {		
 
 		char* source, destination, pathToSource, command;
-		char buffer1[CHUNK_SIZE],buffer2[CHUNK_SIZE];
+		char buffer1[CHUNK_SIZE], buffer2[CHUNK_SIZE];
 		int sourceType;
 		unsigned long totalBytesToCopy, buf1Position, buf2Position;
 		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritter,isBuf2BeingWritter fileNotCompleted;
