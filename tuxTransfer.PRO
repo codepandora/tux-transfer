@@ -1,4 +1,3 @@
-CONFIG+=static
 TEMPLATE = app
 QT += widgets
 HEADERS += src/TuxTray.h

@@ -58,7 +58,7 @@ public:
             copyDialog->setObjectName(QStringLiteral("copyDialog"));
         copyDialog->resize(419, 170);
         copyDialog->setMinimumSize(QSize(419, 170));
-        copyDialog->setMaximumSize(QSize(420, 170));
+        copyDialog->setMaximumSize(QSize(420, 350));
         QIcon icon;
         icon.addFile(QStringLiteral(":/icons/res/copyIcon.png"), QSize(), QIcon::Normal, QIcon::Off);
         copyDialog->setWindowIcon(icon);
