@@ -18,6 +18,7 @@ class ProgressTracker
 		void putTmpFileName( const char* );	// make new tmpFile name entry for new copyinstance
 		void putNextFileNameIndexToCopy( int, long );	// set next file index to be copied after last one completed copying	
 		void putOffsetToCopyFrom( int, long );	// update copy progress of current copy process after every successful copy 512kb
+		int getCopyInstanceCount();
 
 	private:
 		const static char* progressTrackerFile;	// file name to store all copying processes' progress

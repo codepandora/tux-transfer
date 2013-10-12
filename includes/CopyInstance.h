@@ -11,6 +11,7 @@
 #include<fstream>
 #include<boost/thread.hpp>
 #include<boost/thread/thread.hpp>
+#include "threadPool.h"
 #define NEWDIR ( dir* ) malloc( sizeof( dir ) )
 #define NEWFILE ( file* ) malloc( sizeof( file ) )
 #define CHUNK_SIZE 512
@@ -24,7 +25,7 @@ class copyInstance
 		char buffer1[CHUNK_SIZE], buffer2[CHUNK_SIZE];
 		int sourceType;
 		unsigned long totalBytesToCopy, buf1Position, buf2Position;
-		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritter,isBuf2BeingWritter fileNotCompleted;
+		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritten,isBuf2BeingWritten, fileNotCompleted;
 		void initializeSourceDirStructure();
 		bool isDir( const char* );
 		bool isFile( const char*, long* );
@@ -33,7 +34,8 @@ class copyInstance
 		void reader();
 		void writer();
 		ifstream readerStream;
-		ofstream writerStream1,writeStream2;
+		ofstream writerStream1,writerStream2;
+		ThreadPool *pool;
 
 	public:
 		copyInstance( const char*[], int, const char* );

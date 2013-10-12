@@ -1,6 +1,5 @@
-
 #include "../includes/CopyInstance.h"
-
+#include "threadPool.cpp"
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest): isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	string source( src[0] ), destination( dest ), resultantDestination, sourcePath;
@@ -94,8 +93,8 @@ void copyInstance::copyWork( string sourcePath, string destination )
 
 				//ofstream writerStream; //comment this
 				//ifstream readerStream; //comment this also and observe
-				writerStream1.open( resultantDestination.c_str(), ios::binary );
-				writerStream2.open( resultantDestination.c_str(), ios::binary );
+				writerStream1.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
+				writerStream2.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
 				readerStream.open( tmp.c_str(), ios::binary );
 				/*while( readerStream.read( buffer, CHUNK_SIZE) )
 				{
@@ -103,8 +102,13 @@ void copyInstance::copyWork( string sourcePath, string destination )
 				}
 				//reader();   
 				*/
+				pool = new ThreadPool(3);
+				pool->run_task(this->reader);
+				pool->run_task(this->writer);
+				pool->run_task(this->writer);
 			}
 		}
+
 }
 
 void copyInstance::writer()
@@ -112,11 +116,12 @@ void copyInstance::writer()
 
 	while( fileNotCompleted )
 	{
-		if( !isBuffer1Free && !isBuf1BeingWritten )
+		if( !isBuffer1Free && !isBuf1BeingWritten)
 		{
 			isBuf1BeingWritten = true;
 			writerStream1.seekp( buf1Position );
 			writerStream1.write( buffer1, CHUNK_SIZE );
+			writerStream1.flush();
 			isBuffer1Free = true;
 			isBuf1BeingWritten = false;		
 		}
@@ -126,13 +131,13 @@ void copyInstance::writer()
 			isBuf2BeingWritten = true;
 			writerStream2.seekp( buf2Position );
 			writerStream2.write( buffer2, CHUNK_SIZE );
+			writerStream2.flush();
 			isBuffer2Free = true;
 			isBuf2BeingWritten = false;		
 		}
-			
 	}
-	
-
+	writerStream1.close();
+	writerStream2.close();
 }
 
 
@@ -140,7 +145,7 @@ void copyInstance::reader()
 {
 	buf1Position = 0;
 	buf2Position = 0;
-	unsigned long CurrentReadPosition = 0;
+	unsigned long currentReadPosition = 0;
 	while( fileNotCompleted )
 		{
 			if( isBuffer1Free )
@@ -161,6 +166,7 @@ void copyInstance::reader()
 				currentReadPosition += CHUNK_SIZE;
 			}
 		}
+	readerStream.close();
 }
 
 

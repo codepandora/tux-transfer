@@ -132,7 +132,7 @@ void more_work( int n)
  }
 
 }
-
+/*
 int main()
 {
   cout<<"Starting Thread Pool"<<endl; 
@@ -146,3 +146,4 @@ int main()
 
   return 0;
 }
+*/
