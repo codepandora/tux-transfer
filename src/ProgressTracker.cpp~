@@ -123,7 +123,7 @@ int ProgressTracker::getCopyInstanceCount()
 	ifstream recordCounterStream( progressTrackerFile, ios::in | ios::binary );
 	recordCounterStream.seekg( 0, recordCounterStream.end );
 	cout<< endl<<recordCounterStream.tellg()<<endl;
-	return ( ( recordCounterStream.tellg()/ recordLen ) );
+	return ( ( recordCounterStream.tellg()/( recordLen - 1 ) ) );
 }
 
 

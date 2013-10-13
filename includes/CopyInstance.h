@@ -37,7 +37,8 @@ class copyInstance
 		void testPrint();
 		void reader();
 		void writer();
-
+		string getPathFromSource( string );
+		string generateTempFileName();
 
 	public:
 		copyInstance( const char*[], int, const char* );

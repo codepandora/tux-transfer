@@ -2,23 +2,14 @@
 #include "threadPool.cpp"
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest): isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
-	string source( src[0] ), destination( dest ), resultantDestination, sourcePath;
+	string source( src[0] ), destination( dest ), resultantDestination, tmpFileName;
 	progressTracker = new ProgressTracker();
-	cout<< source.c_str()<< ( sizeof( src )/ sizeof( *src ) )<< endl;
-	int srcLen = source.length();
-	int position;
 
-		for( int cnt = 0; cnt < srcLen-2; cnt++ )
-		{
-			if( source.at( cnt )== '/' )
-			{
-				position  = cnt;
-			}
-		}
-	
-	sourcePath = source;
-		sourcePath.replace( ( position+1 ), ( source.length()-1 ),"" );
-		cout<<"sourc -"<< sourcePath<<endl; 
+	sourcePath = getPathFromSource( source );
+	cout<<"sourc -"<< sourcePath<<endl; 
+
+	tmpFileName = generateTempFileName();
+	progressTracker->putTmpFileName( tempFileName.c_str() );
 	for( int srcListCounter = 0; srcListCounter < numberOfSources; srcListCounter++ )
 	{
 		string source( src[srcListCounter] );
@@ -37,20 +28,13 @@ copyInstance::copyInstance( const char* src[], int numberOfSources, const char* 
 			
 			string commandStart = "ls -Rr ";
 			string commandEnd = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' >> ../tmp/";
-			int copyInstanceCount = progressTracker->getCopyInstanceCount();
-			string destTempFileName;
-			if(copyInstanceCount < 10 )
-				destTempFileName.append( "00" );
-			else if( copyInstanceCount < 100 )
-				 destTempFileName.append( "0" );
-			destTempFileName.append( copyInstanceCount );
-			destTempFileName.append( "tmp.list");
-			progressTracker->putTmpFileName( destTempFileName.c_str() );
+			
+			
 			string finalCommand;
 			finalCommand = commandStart;
 			finalCommand.append( source );
 			finalCommand.append( commandEnd );
-			finalCommand.append( destTempFileName );
+			finalCommand.append( tempFileName );
 			system( finalCommand.c_str() );
 			
 			//boost::thread copyThread( boost::bind( &copyInstance::testPrint, this) ) ;
@@ -61,7 +45,8 @@ copyInstance::copyInstance( const char* src[], int numberOfSources, const char* 
 		{
 			string command( "echo \"" );
 			command.append( source );
-			command.append( "\" >> ../tmp/tmp.list ");
+			command.append( "\" >> ../tmp/");
+			command.append( tmpFileName );
 			system( command.c_str() ); 
 			
 		}
@@ -74,6 +59,18 @@ void copyInstance::testPrint()
 	cout<< endl<<"testing"<<endl;
 }
 
+string CopyInstance::generateTempFileName()
+{
+	int copyInstanceCount = progressTracker->getCopyInstanceCount();
+	string destTempFileName;
+	if(copyInstanceCount < 10 )
+		destTempFileName.append( "00" );
+	else if( copyInstanceCount < 100 )
+			 destTempFileName.append( "0" );
+	destTempFileName.append( copyInstanceCount );
+	destTempFileName.append( "tmp.list");
+	return destTempFileName;
+}
 
 
 
@@ -209,6 +206,23 @@ bool copyInstance::isFile( const char* path, long* size )
 }
 
 
+string CopyInstance::getPathFromSource( string path)
+{
+
+	int srcLen = path.length();
+	int position;
+
+		for( int cnt = 0; cnt < srcLen-2; cnt++ )
+		{
+			if( path.at( cnt )== '/' )
+			{
+				position  = cnt;
+			}
+		}
+	
+		path.replace( ( position+1 ), ( path.length()-1 ),"" );
+		return path;
+}
 
 
 
