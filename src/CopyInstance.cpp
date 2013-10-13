@@ -113,9 +113,9 @@ void copyInstance::copyWork( string sourcePath, string destination )
 				//reader();   
 				*/
 				pool = new ThreadPool(3);
-				pool->run_task(this->reader);
-				pool->run_task(this->writer);
-				pool->run_task(this->writer);
+				pool->run_task(boost::bind(&copyInstance::reader,this));
+				pool->run_task(boost::bind(&copyInstance::writer,this));
+				pool->run_task(boost::bind(&copyInstance::writer,this));
 			}
 		}
 

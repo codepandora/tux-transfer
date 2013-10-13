@@ -1,4 +1,3 @@
-
 #ifndef CopyInstance
 #define CopyInstance
 
