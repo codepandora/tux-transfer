@@ -1,6 +1,5 @@
 #include "../includes/ProgressTracker.h"
 #include<fstream>
-const char* ProgressTracker::progressTrackerFile = "../tmpFileList.lst";
 
 bool ProgressTracker::instantiated = false;
 
@@ -23,9 +22,11 @@ ProgressTracker* ProgressTracker::getInstance()
 
 ProgressTracker::ProgressTracker(): tmpFileNameLen( 11 ), lineNumberLen( 8 ), lineNumberOffset( 11 ), offsetStorageLen( 8 ), offsetStorageOffset( 19 )
 {
+	progressTrackerFile = "../tmpFileList.lst";
 	fileWriter.open(progressTrackerFile, ios::in | ios::out | ios::binary );
 	fileReader.open(progressTrackerFile, ios::in | ios::binary );
-	recordLen = tmpFileNameLen + lineNumberLen + offsetStorageLen;	
+	recordLen = tmpFileNameLen + lineNumberLen;	
+	cout<< endl<<"recordlength "<<recordLen<<endl;
 	numberOfCopyInstances = 0;
 	if(! fileExists( progressTrackerFile ) )
 	{
@@ -121,7 +122,14 @@ int ProgressTracker::getCopyInstanceCount()
 {
 	ifstream recordCounterStream( progressTrackerFile, ios::in | ios::binary );
 	recordCounterStream.seekg( 0, recordCounterStream.end );
-	return recordCounterStream.tellg()/recordLen;
+	cout<< endl<<recordCounterStream.tellg()<<endl;
+	return ( ( recordCounterStream.tellg()/( recordLen - 1 ) ) );
+}
+
+
+int ProgressTracker::getCopyInstanceSequenceNumber()
+{
+	return currentCopyInstanceSequenceNumber;
 }
 
 
@@ -132,13 +140,14 @@ ProgressTracker::~ProgressTracker()
 }
 
 
+
 int main(void)
 {
 	char tmp;
-	ProgressTracker* tracker = ProgressTracker::getInstance();
+	ProgressTracker* tracker = new ProgressTracker();
 	tracker->putTmpFileName( "231tmp.list" );
 	//cin>>tmp;
-	//tracker->putTmpFileName( "456tmp.list" );
+	tracker->putTmpFileName( "456tmp.list" );
 	//tracker->putTmpFileName( "656tmp.list" );
 	//tracker->putTmpFileName( "856tmp.list" );
 	//cin>>tmp;

@@ -11,6 +11,7 @@
 #include<fstream>
 #include<boost/thread.hpp>
 #include<boost/thread/thread.hpp>
+#include "../src/ProgressTracker.cpp"
 #include "threadPool.h"
 #define NEWDIR ( dir* ) malloc( sizeof( dir ) )
 #define NEWFILE ( file* ) malloc( sizeof( file ) )
@@ -26,6 +27,10 @@ class copyInstance
 		int sourceType;
 		unsigned long totalBytesToCopy, buf1Position, buf2Position;
 		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritten,isBuf2BeingWritten, fileNotCompleted;
+		ifstream readerStream;
+		ofstream writerStream1,writerStream2;
+		ThreadPool *pool;
+		ProgressTracker *progressTracker;
 		void initializeSourceDirStructure();
 		bool isDir( const char* );
 		bool isFile( const char*, long* );
@@ -33,9 +38,7 @@ class copyInstance
 		void testPrint();
 		void reader();
 		void writer();
-		ifstream readerStream;
-		ofstream writerStream1,writerStream2;
-		ThreadPool *pool;
+
 
 	public:
 		copyInstance( const char*[], int, const char* );

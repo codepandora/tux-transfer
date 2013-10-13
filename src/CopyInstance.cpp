@@ -3,6 +3,7 @@
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest): isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	string source( src[0] ), destination( dest ), resultantDestination, sourcePath;
+	progressTracker = new ProgressTracker();
 	cout<< source.c_str()<< ( sizeof( src )/ sizeof( *src ) )<< endl;
 	int srcLen = source.length();
 	int position;
@@ -34,13 +35,22 @@ copyInstance::copyInstance( const char* src[], int numberOfSources, const char* 
 			if( destination.at( destination.length()-1 )!='/' )
 				destination.append("/");
 			
-			string finalCommand;
 			string commandStart = "ls -Rr ";
-			string commandEnd = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' >> ../tmp/001tmp.list";
+			string commandEnd = " | awk ' /:$/&&f{s=$0;f=0} /:$/&&!f{sub(/:$/,\"\");s=$0;f=1;next} NF&&f{ print s\"/\"$0 }' >> ../tmp/";
+			int copyInstanceCount = progressTracker->getCopyInstanceCount();
+			string destTempFileName;
+			if(copyInstanceCount < 10 )
+				destTempFileName.append( "00" );
+			else if( copyInstanceCount < 100 )
+				 destTempFileName.append( "0" );
+			destTempFileName.append( copyInstanceCount );
+			destTempFileName.append( "tmp.list");
+			progressTracker->putTmpFileName( destTempFileName.c_str() );
+			string finalCommand;
 			finalCommand = commandStart;
 			finalCommand.append( source );
 			finalCommand.append( commandEnd );
-
+			finalCommand.append( destTempFileName );
 			system( finalCommand.c_str() );
 			
 			//boost::thread copyThread( boost::bind( &copyInstance::testPrint, this) ) ;
