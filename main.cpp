@@ -4,8 +4,7 @@
  *Version: 0.1
  */
 
-#include "ui/copyDialog.h"
-#include "src/TuxTray.h"
+#include "includes/TuxTray.h"
 
 int main(int argc, char *argv[])
  {
@@ -13,7 +12,7 @@ int main(int argc, char *argv[])
      app.setAttribute(Qt::AA_DontShowIconsInMenus, false);    
 
      TuxTray *icon = new TuxTray;
-      icon->show();
+     //icon->show();
 
      return app.exec();
  }

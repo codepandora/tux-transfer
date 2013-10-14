@@ -3,14 +3,14 @@
  *Author: CodePandora
  */
 
-#include "TuxTray.h"
-#include "../ui/optionsDialog.h"
-#include "../ui/aboutDialog.h"
+#include "../includes/TuxTray.h"
 
 TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
 {
   Ui::optionsDialog ui;
   ui.setupUi(this);
+
+  tuxCopy = new TuxCopy();
 
   Ui::aboutDialog ui_about;
   aboutDialog = new QDialog();
@@ -23,11 +23,12 @@ TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
     trayIcon->setVisible(true);
 
     if(trayIcon->isVisible() && QSystemTrayIcon::isSystemTrayAvailable())  
-      trayIcon->setToolTip("Visible");
+      trayIcon->setToolTip("TuxTransfer");
     else
       trayIcon->setToolTip("Invisible");
 
     trayIcon->show(); 
+    
 }
 
 /// Hide and destroy the icon in the systray
@@ -35,6 +36,7 @@ TuxTray::~TuxTray()
 {
     delete trayIcon;
     delete trayIconMenu;
+    delete copyAction;
     delete options;
     delete about;
     delete quit;
@@ -42,6 +44,9 @@ TuxTray::~TuxTray()
 
 void TuxTray::createActions()
 {
+    copyAction = new QAction(tr("&Copy"), this);
+    connect(copyAction, SIGNAL(triggered()), tuxCopy, SLOT(showDialog()));
+
     options = new QAction(tr("&Options"), this);
     connect(options, SIGNAL(triggered()), this, SLOT(show()));
  
@@ -56,7 +61,8 @@ void TuxTray::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
  
- 
+    trayIconMenu->addAction(copyAction);
+    trayIconMenu->addSeparator();
     trayIconMenu->addAction(options);
     trayIconMenu->addAction(about);
     trayIconMenu->addSeparator();
@@ -92,7 +98,7 @@ void TuxTray::closeEvent(QCloseEvent *event)
 {
     if (trayIcon->isVisible()) {
         trayIcon->showMessage(tr("Tux Transfer"),
-        tr("Tux Transfer is now running..."));
+        tr("Tux Transfer is running in the background..."));
         hide();
  
         event->ignore(); // Don't let the event propagate to the base class
