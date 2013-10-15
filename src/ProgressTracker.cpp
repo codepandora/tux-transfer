@@ -140,7 +140,7 @@ ProgressTracker::~ProgressTracker()
 }
 
 
-
+/*
 int main(void)
 {
 	char tmp;
@@ -164,3 +164,4 @@ int main(void)
 	cout<< endl<<"number of records" << tracker->getCopyInstanceCount();
 	return 1;
 }
+*/

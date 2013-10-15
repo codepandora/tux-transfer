@@ -21,23 +21,28 @@ using namespace std;
 class copyInstance
 {		
 
-		char* source, destination, pathToSource, command;
+		char* source, pathToSource, command;
+		string sourcePath, tmpFileName, destination;
 		char buffer1[CHUNK_SIZE], buffer2[CHUNK_SIZE];
-		int sourceType;
+		int sourceType, i;
 		unsigned long totalBytesToCopy, buf1Position, buf2Position;
 		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritten,isBuf2BeingWritten, fileNotCompleted;
 		ifstream readerStream;
 		ofstream writerStream1,writerStream2;
-		ThreadPool *pool;
-		ProgressTracker *progressTracker;
+		ThreadPool* pool;
+		ProgressTracker* progressTracker;
 		void initializeSourceDirStructure();
 		bool isDir( const char* );
 		bool isFile( const char*, long* );
-		void copyWork( string, string );
+		void copyWork();
 		void testPrint();
 		void reader();
 		void writer();
+
+		//template<typename string>
 		string getPathFromSource( string );
+		//template<typename string>
+
 		string generateTempFileName();
 
 	public:

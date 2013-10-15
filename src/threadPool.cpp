@@ -28,7 +28,7 @@ ThreadPool::~ThreadPool()
     catch ( ... ) {}
   }
 
-template < typename Task >
+template < typename Task >  
 void ThreadPool::run_task( Task task )
   {
     boost::unique_lock< boost::mutex > lock( mutex_ );
