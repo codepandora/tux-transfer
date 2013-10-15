@@ -23,6 +23,28 @@ TuxCopy::TuxCopy(QDialog *parent) : QDialog(parent)
 
 void TuxCopy::showDialog()
 {
+  QFileDialog srcDialog(this);
+  srcDialog.setFileMode(QFileDialog::ExistingFiles);
+  QStringList srcList;
+  if(srcDialog.exec())
+  {
+    srcList = srcDialog.selectedFiles();
+    QMessageBox msg;
+    msg.setText(srcList.at(0));
+    msg.exec();
+  }
+
+  QFileDialog destDialog(this);
+  destDialog.setFileMode(QFileDialog::Directory);
+  QStringList destList;
+  if(destDialog.exec())
+  {
+    destList = destDialog.selectedFiles();
+    QMessageBox msg2;
+    msg2.setText(destList.at(0));
+    msg2.exec();
+  }
+
   copyDialog->show();
 }
 

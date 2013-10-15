@@ -1,9 +1,7 @@
-#ifndef TUX_COPY_H
-#define TUX_COPY_H
+#ifndef TUX_MOVE_H
+#define TUX_MOVE_H
 
 #include <QStandardItemModel>
-#include <QFileDialog>
-#include <QMessageBox>
 #include "../ui/copyDialog.h"
 #include "../ui/copyMore.h"
 
@@ -12,13 +10,13 @@ class TuxCopy : public QDialog
 	Q_OBJECT;
 
 public:
-	TuxCopy(QDialog *parent=0);
-//	~TuxCopy();
+	TuxMove(QDialog *parent=0);
+//	~TuxMove();
 	
-	QDialog *copyDialog;
+	QDialog *moveDialog;
 	QWidget *more;
 	QStandardItemModel *model;
-        Ui::copyDialog ui_copy;
+        Ui::copyDialog ui_move;
 	Ui::copyMore ui_more;
 
 	void displayList(); //Display the File List table in More panel
