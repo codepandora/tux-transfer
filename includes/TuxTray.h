@@ -14,6 +14,7 @@
 #include "../ui/optionsDialog.h"
 #include "../ui/aboutDialog.h"
 #include "../includes/tuxCopy.h"
+#include "../includes/tuxMove.h"
  
 class TuxTray : public QDialog
 {
@@ -35,9 +36,11 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     QDialog *aboutDialog;
-    TuxCopy *tuxCopy;    
+    TuxCopy *tuxCopy;
+    TuxMove *tuxMove;    
 
     QAction *copyAction;
+    QAction *moveAction;
     QAction *options;
     QAction *about;
     QAction *quit;

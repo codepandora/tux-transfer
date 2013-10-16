@@ -5,7 +5,7 @@
 #include "../ui/copyDialog.h"
 #include "../ui/copyMore.h"
 
-class TuxCopy : public QDialog
+class TuxMove : public QDialog
 {
 	Q_OBJECT;
 

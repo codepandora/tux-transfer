@@ -11,6 +11,7 @@ TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
   ui.setupUi(this);
 
   tuxCopy = new TuxCopy();
+  tuxMove = new TuxMove();
 
   Ui::aboutDialog ui_about;
   aboutDialog = new QDialog();
@@ -37,6 +38,7 @@ TuxTray::~TuxTray()
     delete trayIcon;
     delete trayIconMenu;
     delete copyAction;
+    delete moveAction;
     delete options;
     delete about;
     delete quit;
@@ -46,6 +48,9 @@ void TuxTray::createActions()
 {
     copyAction = new QAction(tr("&Copy"), this);
     connect(copyAction, SIGNAL(triggered()), tuxCopy, SLOT(showDialog()));
+
+    moveAction = new QAction(tr("&Move"), this);
+    connect(moveAction, SIGNAL(triggered()), tuxMove, SLOT(showDialog()));
 
     options = new QAction(tr("&Options"), this);
     connect(options, SIGNAL(triggered()), this, SLOT(show()));
@@ -62,6 +67,7 @@ void TuxTray::createTrayIcon()
     trayIconMenu = new QMenu(this);
  
     trayIconMenu->addAction(copyAction);
+    trayIconMenu->addAction(moveAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(options);
     trayIconMenu->addAction(about);

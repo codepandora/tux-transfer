@@ -4,6 +4,8 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTime>
+#include <QTimer>
 #include "../ui/copyDialog.h"
 #include "../ui/copyMore.h"
 
@@ -20,13 +22,18 @@ public:
 	QStandardItemModel *model;
         Ui::copyDialog ui_copy;
 	Ui::copyMore ui_more;
+	QTime time;
+	QTimer *timer;
+	int elapsed;
 
 	void displayList(); //Display the File List table in More panel
 	QList<QStandardItem *> prepareRow(const QString&,const QString&); //Prepare a Tuple for File List Table
+	void startElapsedTimer();
 
 private slots:
 	void showDialog(); //SLOT to display CopyDialog
 	void toggleMore(bool); //SLOT to toggle More panel display 
+	void showTime();
 
 };
 

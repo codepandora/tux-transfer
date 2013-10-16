@@ -14,6 +14,9 @@ TuxCopy::TuxCopy(QDialog *parent) : QDialog(parent)
 	
      connect(ui_copy.btnMore, SIGNAL(toggled(bool)),this,SLOT(toggleMore(bool)));
 
+     elapsed=0;
+     startElapsedTimer();     
+
      displayList(); //Display File List in More Panel
  
      QList<QStandardItem *>firstRow = prepareRow("/home/codepandora/cp.png","In Progress");  
@@ -76,3 +79,22 @@ QList<QStandardItem *> TuxCopy::prepareRow(const QString &first,const QString &s
      rowItems << new QStandardItem(second);
      return rowItems;
  }
+
+void TuxCopy::startElapsedTimer()
+{
+
+	time.setHMS(0,0,0,0);
+	timer = new QTimer(this);
+	timer->start(1000);
+	connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
+}
+
+void TuxCopy::showTime()
+{
+	QTime newtime;
+	
+	elapsed=elapsed+1;
+	newtime=time.addSecs(elapsed);
+	QString text = newtime.toString("hh:mm:ss");
+	ui_copy.lblTimeElapsed->setText("Elapsed Time: " + text);
+} 
