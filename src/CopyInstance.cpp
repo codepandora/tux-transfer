@@ -1,9 +1,9 @@
 #include "../includes/CopyInstance.h"
 #include "threadPool.cpp"
-copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
+copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):currentFileSize(0), destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	i = 0;
-	Pool = new ThreadPool(2);
+	pool = new ThreadPool(2);
 	//writerPool = new ThreadPool(2);
 	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
 	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
@@ -115,17 +115,22 @@ void copyInstance::copyWork()
 			if( isDir( tmp.c_str() ) )
 			{
 				mkdir( resultantDestination.c_str(), 0777 );
-				cout<< "result - "<<resultantDestination<<endl;
+				cout<< endl << endl <<"Creating directory - "<<resultantDestination<<endl;
 			}
 			else
 			{
-				cout<< "result - "<< resultantDestination<<endl;
+				//cout<< "result - "<< resultantDestination<<endl;
 				writerStream1.open( resultantDestination.c_str(), ios::out | ios::binary );
 				//writerStream2.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
 				readerStream.open( tmp.c_str(), ios::in | ios::binary  );
 				cout<<endl<<"starting copy for "<<resultantDestination<<endl;
+				isFile( tmp.c_str(), &currentFileSize );
+				progressBar = new boost::progress_display( currentFileSize/512 );
 				fileNotCompleted = true;
 				pool->run_task(boost::bind(&copyInstance::testCopy,this));
+				
+				
+
 				//readerPool->run_task(boost::bind(&copyInstance::reader,this));
 				//writerPool->run_task(boost::bind(&copyInstance::writer,this));
 				//pool->run_task(boost::bind(&copyInstance::writer,this));
@@ -148,7 +153,8 @@ void copyInstance::copyWork()
 				while( fileNotCompleted ){
 					sleep(0);
 				}
-				cout<< "completed";
+				delete( progressBar );
+				cout<< endl<<"completed";
 				//pool->join();
 				//pool->run_task(boost::bind(&copyInstance::writer,this));
 			}
@@ -191,6 +197,7 @@ void copyInstance::testCopy()
 				//this->writerStream1.seekp( this->buf1Position );
 				this->writerStream1.write( this->buffer1, CHUNK_SIZE );
 				this->writerStream1.flush();
+				++( *(this->progressBar) );
 			}
 		
 		this->readerStream.close();
@@ -272,7 +279,7 @@ bool copyInstance::isDir( const char* path )
 			return false;
 }
 
-bool copyInstance::isFile( const char* path, long* size )
+bool copyInstance::isFile( const char* path, unsigned long* size )
 {
 	struct stat sourcePathStat;
 	int status;
