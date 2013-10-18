@@ -27,9 +27,9 @@ class copyInstance
 		int sourceType, i;
 		unsigned long totalBytesToCopy, buf1Position, buf2Position;
 		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritten,isBuf2BeingWritten, fileNotCompleted;
-		ifstream readerStream;
-		ofstream writerStream1,writerStream2;
-		ThreadPool* pool;
+		fstream readerStream;
+		fstream writerStream1,writerStream2;
+		ThreadPool* pool, *readerPool, *writerPool;
 		ProgressTracker* progressTracker;
 		void initializeSourceDirStructure();
 		bool isDir( const char* );
@@ -44,6 +44,7 @@ class copyInstance
 		//template<typename string>
 
 		string generateTempFileName();
+		void testCopy();	
 
 	public:
 		copyInstance( const char*[], int, const char* );

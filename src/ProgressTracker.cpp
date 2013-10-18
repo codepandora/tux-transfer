@@ -22,7 +22,7 @@ ProgressTracker* ProgressTracker::getInstance()
 
 ProgressTracker::ProgressTracker(): tmpFileNameLen( 11 ), lineNumberLen( 8 ), lineNumberOffset( 11 ), offsetStorageLen( 8 ), offsetStorageOffset( 19 )
 {
-	progressTrackerFile = "../tmpFileList.lst";
+	progressTrackerFile = "tmpFileList.lst";
 	fileWriter.open(progressTrackerFile, ios::in | ios::out | ios::binary );
 	fileReader.open(progressTrackerFile, ios::in | ios::binary );
 	recordLen = tmpFileNameLen + lineNumberLen;	

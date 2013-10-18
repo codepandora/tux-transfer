@@ -3,6 +3,11 @@
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	i = 0;
+	Pool = new ThreadPool(2);
+	//writerPool = new ThreadPool(2);
+	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
+	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
+	
 	string source( src[0] ), destination( dest );
 
 	progressTracker = new ProgressTracker();
@@ -62,17 +67,22 @@ copyInstance::copyInstance( const char* src[], int numberOfSources, const char* 
 		}
 
 	}
+	
 	copyWork();	// start copy work for given 
+	/*pool = new ThreadPool(3);
+	pool->run_task(boost::bind(&copyInstance::testPrint,this));
+	pool->run_task(boost::bind(&copyInstance::testPrint,this));
+	*/
 }
 
 void copyInstance::testPrint()
 {
 	cout<< endl<<"testing"<<endl;
-	
-	
-		cout<<this->i<<endl;
+	for( int j = 0; j<5; j++ )
+	{
+		cout<< endl<< this->i<< endl;
 		this->i++;
-	
+	}
 }
 
 string copyInstance::generateTempFileName()
@@ -95,9 +105,11 @@ void copyInstance::copyWork()
 	tmpListFile.append( tmpFileName );
 	ifstream fileList( tmpListFile.c_str() );
 	getline( fileList, destination );
-
+	
 		string tmp;
-		while( getline( fileList, tmp ) ){
+		while( getline( fileList, tmp ) )
+		{
+			//pool = new ThreadPool(1);
 			resultantDestination = tmp;
 			resultantDestination.replace( 0, srcLen, destination);
 			if( isDir( tmp.c_str() ) )
@@ -107,27 +119,93 @@ void copyInstance::copyWork()
 			}
 			else
 			{
-				cout<< "result - "<<resultantDestination<<endl;
-				writerStream1.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
-				writerStream2.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
-				readerStream.open( tmp.c_str(), ios::binary );
-
-				pool = new ThreadPool(3);
-				pool->run_task(boost::bind(&copyInstance::reader,this));
-				pool->run_task(boost::bind(&copyInstance::writer,this));
+				cout<< "result - "<< resultantDestination<<endl;
+				writerStream1.open( resultantDestination.c_str(), ios::out | ios::binary );
+				//writerStream2.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
+				readerStream.open( tmp.c_str(), ios::in | ios::binary  );
+				cout<<endl<<"starting copy for "<<resultantDestination<<endl;
+				fileNotCompleted = true;
+				pool->run_task(boost::bind(&copyInstance::testCopy,this));
+				//readerPool->run_task(boost::bind(&copyInstance::reader,this));
+				//writerPool->run_task(boost::bind(&copyInstance::writer,this));
+				//pool->run_task(boost::bind(&copyInstance::writer,this));
+				/*unsigned long currentReadPosition = 0;
+				while( this->readerStream.read( this->buffer1, CHUNK_SIZE) )
+			{
+				/*this->buf1Position = currentReadPosition;
+				currentReadPosition += CHUNK_SIZE;
+			
+				cout<< endl<<"buffer write position 1"<< this->buf1Position<< endl;
+			
+				//this->writerStream1.seekp( this->buf1Position );
+				
+				this->writerStream1.write( this->buffer1, CHUNK_SIZE );
+				this->writerStream1.flush();
+			}
+				readerStream.close();
+				writerStream1.close();
+				*/
+				while( fileNotCompleted ){
+					sleep(0);
+				}
+				cout<< "completed";
 				//pool->join();
 				//pool->run_task(boost::bind(&copyInstance::writer,this));
 			}
+			//delete( pool );
 		}		
+}
 
+
+void copyInstance::testCopy()
+{
+	unsigned long currentReadPosition = 0;
+	/*while( this->fileNotCompleted )
+		{
+			cout<< endl<<"buffer 1 reader position"<<this->buf1Position<< endl;
+			if( !this->readerStream.read( this->buffer1, CHUNK_SIZE) )
+			{
+				this->fileNotCompleted = false;
+				break;
+			}
+			this->buf1Position = currentReadPosition;
+			currentReadPosition += CHUNK_SIZE;
+		
+			cout<< endl<<"buffer write position 1"<< this->buf1Position<< endl;
+			
+			//this->writerStream1.seekp( this->buf1Position );
+			this->writerStream1.write( this->buffer1, CHUNK_SIZE );
+			this->writerStream1.flush();
+		}	
+		this->readerStream.close();
+		this->writerStream1.close();
+*/
+
+			while( this->readerStream.read( this->buffer1, CHUNK_SIZE) )
+			{
+				//this->buf1Position = currentReadPosition;
+				//currentReadPosition += CHUNK_SIZE;
+			
+				//cout<< endl<<"buffer write position 1"<< this->buf1Position<< endl;
+			
+				//this->writerStream1.seekp( this->buf1Position );
+				this->writerStream1.write( this->buffer1, CHUNK_SIZE );
+				this->writerStream1.flush();
+			}
+		
+		this->readerStream.close();
+		this->writerStream1.close();
+		this->fileNotCompleted = false;	
 }
 
 void copyInstance::writer()
 {
+	cout<< "in writer";
 	while( this->fileNotCompleted )
 	{
-		if( !this->isBuffer1Free && !this->isBuf1BeingWritten)
+		if( !this->isBuffer1Free && !this->isBuf1BeingWritten )
 		{
+			cout<< endl<<"buffer write position 1"<< this->buf1Position<< endl;
 			this->isBuf1BeingWritten = true;
 			this->writerStream1.seekp( this->buf1Position );
 			this->writerStream1.write( this->buffer1, CHUNK_SIZE );
@@ -138,6 +216,7 @@ void copyInstance::writer()
 
 		if( !this->isBuffer2Free && !this->isBuf2BeingWritten )
 		{
+			cout<< endl<<"buffer write 2 position"<< this->buf2Position<< endl;
 			this->isBuf2BeingWritten = true;
 			this->writerStream2.seekp( this->buf2Position );
 			this->writerStream2.write( this->buffer2, CHUNK_SIZE );
@@ -152,7 +231,6 @@ void copyInstance::writer()
 
 void copyInstance::reader()
 {
-	cout<< endl<<"buffer position"<<this->buf1Position<< endl;
 	this->buf1Position = 0;
 	this->buf2Position = 0;
 	unsigned long currentReadPosition = 0;
@@ -160,18 +238,21 @@ void copyInstance::reader()
 		{
 			if( this->isBuffer1Free )
 			{
-				
+				cout<< endl<<"buffer 1 reader position"<<this->buf1Position<< endl;
 				if( !this->readerStream.read( this->buffer1, CHUNK_SIZE) )
 					this->fileNotCompleted = false;
 				this->buf1Position = currentReadPosition;
+				this->isBuffer1Free = false;
+
 				currentReadPosition += CHUNK_SIZE;
 			}
 
 			if( this->isBuffer2Free )
 			{
-				
+				cout<< endl<<"buffer 2 reader position"<<this->buf2Position<< endl;
 				if( !this->readerStream.read( this->buffer2, CHUNK_SIZE) )
 					this->fileNotCompleted = false;
+				this->isBuffer2Free = false;
 				this->buf2Position = currentReadPosition;
 				currentReadPosition += CHUNK_SIZE;
 			}
@@ -231,9 +312,9 @@ string copyInstance::getPathFromSource( string path )
 
 int main( void )
 {
-	const char* srcs[] = {"/home/droidboyjr/Pictures/walls","/home/droidboyjr/Pictures/background.jpg","/home/droidboyjr/Pictures/bans"};
+	const char* srcs[] = {"/home/droidboyjr/Pictures/bans","/home/droidboyjr/Pictures/background.jpg"};
 	const char* dest = "/home/droidboyjr/Documents/fresh";
-	copyInstance ci( srcs, 3, dest );
+	copyInstance ci( srcs, 2, dest );
 	return 1;
 
 }

@@ -108,7 +108,7 @@ void work()
             cout << "Thread is stopped" << endl;
             return;
         }  
- }
+  }
 }
 
 void more_work( int n) 
