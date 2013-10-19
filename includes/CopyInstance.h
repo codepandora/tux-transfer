@@ -27,7 +27,7 @@ class copyInstance
 		string sourcePath, tmpFileName, destination;
 		char buffer1[CHUNK_SIZE], buffer2[CHUNK_SIZE];
 		int sourceType, i;
-		unsigned long totalBytesToCopy, currentFileSize, buf1Position, buf2Position;
+		unsigned long totalBytesToCopy, currentFileSize, buf1Position, buf2Position, tmpFileLineCounter;
 		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritten,isBuf2BeingWritten, fileNotCompleted;
 		fstream readerStream;
 		fstream writerStream1,writerStream2;

@@ -14,12 +14,12 @@ class ProgressTracker
 		ProgressTracker();
 		~ProgressTracker();
 		static ProgressTracker* getInstance();	// class is singlton
-		const char* getTmpFileName( int );	// get tmpfile name of given index
-		long getCurrentlyCopyingFileNameIndex( int ); // Get line number from tmpFile of file currently being copied
-		long getOffsetToCopyFrom( int );	// get offset till which the curretly file being copied has completed copying
+		const char* getTmpFileName( );	// get tmpfile name of given index
+		long getCurrentlyCopyingFileNameIndex( ); // Get line number from tmpFile of file currently being copied
+		long getOffsetToCopyFrom(  );	// get offset till which the curretly file being copied has completed copying
 		void putTmpFileName( const char* );	// make new tmpFile name entry for new copyinstance
-		void putNextFileNameIndexToCopy( int, long );	// set next file index to be copied after last one completed copying	
-		void putOffsetToCopyFrom( int, long );	// update copy progress of current copy process after every successful copy 512kb
+		void putNextFileNameIndexToCopy( long );	// set next file index to be copied after last one completed copying	
+		void putOffsetToCopyFrom( long );	// update copy progress of current copy process after every successful copy 512kb
 		int getCopyInstanceCount();
 		bool fileExists( const char* );	// check if given file exists
 		int getCopyInstanceSequenceNumber();

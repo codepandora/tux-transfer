@@ -1,10 +1,10 @@
 #include "../includes/CopyInstance.h"
 #include "threadPool.cpp"
-copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):currentFileSize(0), destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
+copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):tmpFileLineCounter(1), currentFileSize(0), destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	i = 0;
 	pool = new ThreadPool( 2 );
-	completetionUpdater = new ThreadPool( 1 );
+	completionUpdater = new ThreadPool( 1 );
 	//writerPool = new ThreadPool(2);
 	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
 	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
@@ -154,8 +154,10 @@ void copyInstance::copyWork()
 				while( fileNotCompleted ){
 					sleep(0);
 				}
-				completetionUpdater = new ThreadPool(1);
-				
+				completionUpdater = new ThreadPool(1);
+				completionUpdater->run_task( boost::bind( &ProgressTracker::putNextFileNameIndexToCopy, progressTracker, (long)12312 ) );
+				cout<< "last file copied "<<progressTracker->getCurrentlyCopyingFileNameIndex()<< endl;
+				tmpFileLineCounter++;
 				delete( progressBar );
 				cout<< endl<<"completed";
 				//pool->join();

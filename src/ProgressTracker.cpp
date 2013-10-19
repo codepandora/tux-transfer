@@ -9,16 +9,6 @@ bool ProgressTracker::instantiated = false;
 
 ProgressTracker* ProgressTracker::progressTrackerPtr = NULL;
 
-ProgressTracker* ProgressTracker::getInstance()
-{
-
-	if(! instantiated )
-	{
-		progressTrackerPtr = new ProgressTracker();
-		return progressTrackerPtr;
-	}
-	return progressTrackerPtr;
-}
 
 ProgressTracker::ProgressTracker(): tmpFileNameLen( 11 ), lineNumberLen( 8 ), lineNumberOffset( 11 ), offsetStorageLen( 8 ), offsetStorageOffset( 19 )
 {
@@ -34,12 +24,9 @@ ProgressTracker::ProgressTracker(): tmpFileNameLen( 11 ), lineNumberLen( 8 ), li
 	recordLen = tmpFileNameLen + lineNumberLen;	
 	cout<< endl<<"recordlength "<<recordLen<<endl;
 	numberOfCopyInstances = getCopyInstanceCount();
-
+	cout<< "current copy instance count" << numberOfCopyInstances<<endl;
 	
 	
-	cout<< "opened in read mode"<<endl;
-	//fileWriter.open( progressTrackerFile, ios::binary );
-	cout<< "opened in write mode"<<endl;
 }
 
 bool ProgressTracker::fileExists( const char* fileName)
@@ -55,8 +42,8 @@ const char* ProgressTracker::getTmpFileName()
 {
 	//fileReader.open( progressTrackerFile, ios::binary );
 	char* fileName = new char[tmpFileNameLen + 1];
-	if( index>0 )
-		fileReader.seekg( (index*recordLen) );
+	if( currentCopyInstanceSequenceNumber>0 )
+		fileReader.seekg( ( currentCopyInstanceSequenceNumber * recordLen ) );
 	fileReader.read( fileName, tmpFileNameLen );
 	//fileReader.close();
 	*(fileName+11) = '\0';
@@ -68,7 +55,7 @@ long ProgressTracker::getCurrentlyCopyingFileNameIndex()
 {
 	//fileReader.open( progressTrackerFile, ios::binary );
 	long fileNameLineNumber = 0;
-	if( index>0 )
+	if( currentCopyInstanceSequenceNumber>0 )
 		fileReader.seekg( ( currentCopyInstanceSequenceNumber * recordLen) + lineNumberOffset );
 	fileReader.read( reinterpret_cast<char *>( &fileNameLineNumber ), sizeof( fileNameLineNumber ) );
 	//fileNameLineNumber = ( long ) tmp;
@@ -89,9 +76,11 @@ long ProgressTracker::getOffsetToCopyFrom()
 void ProgressTracker::putTmpFileName( const char* fileName )
 {
  	//fileWriter.open( progressTrackerFile,ios::in |  ios::out | ios::binary );
+
 	fileWriter.seekp( numberOfCopyInstances * recordLen );
 	
 	fileWriter.write( fileName, tmpFileNameLen );
+	fileWriter.write( "", lineNumberLen );
 	fileWriter.flush();
 	//fileWriter.close();
 
@@ -126,7 +115,7 @@ int ProgressTracker::getCopyInstanceCount()
 {
 	ifstream recordCounterStream( progressTrackerFile, ios::in | ios::binary );
 	recordCounterStream.seekg( 0, recordCounterStream.end );
-	cout<< endl<<recordCounterStream.tellg()<<endl;
+	cout<< endl<< "last point in file"<< recordCounterStream.tellg()<<endl;
 	return ( ( recordCounterStream.tellg()/ recordLen ) );
 }
 
@@ -144,28 +133,37 @@ ProgressTracker::~ProgressTracker()
 }
 
 
-/*
+
 int main(void)
 {
 	char tmp;
 	ProgressTracker* tracker = new ProgressTracker();
+	
 	tracker->putTmpFileName( "231tmp.list" );
+	//tracker->putNextFileNameIndexToCopy( (long)342);
 	//cin>>tmp;
-	tracker->putTmpFileName( "456tmp.list" );
+	ProgressTracker* tracker1 = new ProgressTracker();
+	tracker1->putTmpFileName( "456tmp.list" );
+	tracker1->putNextFileNameIndexToCopy( (long)2452);
+/*
+
+	ProgressTracker* tracker2 = new ProgressTracker();
+	tracker1->putTmpFileName( "777tmp.list" );
+	tracker1->putNextFileNameIndexToCopy( (long)6532);
+	*/
 	//tracker->putTmpFileName( "656tmp.list" );
 	//tracker->putTmpFileName( "856tmp.list" );
 	//cin>>tmp;
-	//tracker->putNextFileNameIndexToCopy( 2, (long)342);
+	
 	//tracker->putOffsetToCopyFrom(2,(long)534534);
 	//cin>>tmp;
-	//cout<< tracker->getTmpFileName( 0 );
+	cout<< endl << "currently copying in 1" << tracker->getCurrentlyCopyingFileNameIndex( ) << "currently copying in 2" << tracker1->getCurrentlyCopyingFileNameIndex( );//<<" currently copying in 3" << tracker2->getCurrentlyCopyingFileNameIndex( );
 	//long newNum;
 	//cin>>newNum;
 	//long newNum = 4;
 	//tracker->putNextFileNameIndexToCopy( 0, newNum);
 	//cout<< endl<<"fileName - "<< endl<< tracker->getTmpFileName( 0 );
 	//printf("\n %s %d %d",tracker->getTmpFileName( 2 ),(int)tracker->getCurrentlyCopyingFileNameIndex( 2 ), (int)tracker->getOffsetToCopyFrom(2));
-	cout<< endl<<"number of records" << tracker->getCopyInstanceCount();
+	cout<< endl << "number of records" << tracker->getCopyInstanceCount();
 	return 1;
 }
-*/
