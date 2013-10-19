@@ -2,6 +2,7 @@
 #include "threadPool.cpp"
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):tmpFileLineCounter(1), currentFileSize(0), destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
+	copyDialog->show();
 	i = 0;
 	pool = new ThreadPool( 2 );
 	completionUpdater = new ThreadPool( 1 );
