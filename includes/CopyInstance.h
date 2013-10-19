@@ -31,7 +31,7 @@ class copyInstance
 		bool isBuffer1Free, isBuffer2Free, isBuf1BeingWritten,isBuf2BeingWritten, fileNotCompleted;
 		fstream readerStream;
 		fstream writerStream1,writerStream2;
-		ThreadPool* pool, *readerPool, *writerPool;
+		ThreadPool* pool, *readerPool, *writerPool, *completionUpdater;
 		ProgressTracker* progressTracker;
 		boost::progress_display* progressBar;
 		void initializeSourceDirStructure();

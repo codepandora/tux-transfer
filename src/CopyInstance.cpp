@@ -3,7 +3,8 @@
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest):currentFileSize(0), destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 	i = 0;
-	pool = new ThreadPool(2);
+	pool = new ThreadPool( 2 );
+	completetionUpdater = new ThreadPool( 1 );
 	//writerPool = new ThreadPool(2);
 	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
 	//pool.run_task( Boost::bind(&copyInstance::testPrint, this));
@@ -153,6 +154,8 @@ void copyInstance::copyWork()
 				while( fileNotCompleted ){
 					sleep(0);
 				}
+				completetionUpdater = new ThreadPool(1);
+				
 				delete( progressBar );
 				cout<< endl<<"completed";
 				//pool->join();
@@ -316,7 +319,7 @@ string copyInstance::getPathFromSource( string path )
 
 
 
-
+/*
 int main( void )
 {
 	const char* srcs[] = {"/home/droidboyjr/Pictures/bans","/home/droidboyjr/Pictures/background.jpg"};
@@ -325,3 +328,5 @@ int main( void )
 	return 1;
 
 }
+*/
+
