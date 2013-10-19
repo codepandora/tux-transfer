@@ -12,13 +12,15 @@
 #include<boost/thread/thread.hpp>
 #include<boost/progress.hpp>
 #include<boost/timer.hpp>
-#include "../src/ProgressTracker.cpp"
+
+#include "ProgressTracker.h"
 #include "threadPool.h"
+
 #define NEWDIR ( dir* ) malloc( sizeof( dir ) )
 #define NEWFILE ( file* ) malloc( sizeof( file ) )
 #define CHUNK_SIZE 512
-using namespace std;
 
+using namespace std;
 
 class copyInstance
 {		
@@ -34,6 +36,7 @@ class copyInstance
 		ThreadPool* pool, *readerPool, *writerPool, *completionUpdater;
 		ProgressTracker* progressTracker;
 		boost::progress_display* progressBar;
+
 		void initializeSourceDirStructure();
 		bool isDir( const char* );
 		bool isFile( const char*, unsigned long* );
@@ -50,7 +53,7 @@ class copyInstance
 		void testCopy();	
 
 	public:
-		copyInstance( const char*[], int, const char* );
+		copyInstance( const char*[], int, const char*,void* );
 
 };
 

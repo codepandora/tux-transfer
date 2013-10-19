@@ -47,15 +47,16 @@ void TuxCopy::showDialog()
     msg2.setText(destList.at(0));
     msg2.exec();
   }
-  int srcListLen = srcList.size();
-  const char* list[srcListLen];
+  /*int srcListLen = srcList.size();
+    char* list[srcListLen];
   for( int cnt=0;cnt< srcListLen; cnt++ )
   {
-      strcpy( list[cnt], srcList.at( cnt ) );
+      strcpy( list[cnt], srcList.at( cnt ).toLocal8Bit().data() );
   }
-
-  copyProcess = new copyInstance( list, srcListLen, destList.at( 0 ) );
-
+  */
+const char* srcs[] ={"/home/redlightning/Pictures"};
+  //  copyProcess = new copyInstance( const_cast<const char**>(list), srcListLen, destList.at( 0 ).toLocal8Bit().data(),this );
+  copyProcess = new copyInstance( srcs,1, "/home/redlightning/Downloads",this );
   
   //startElapsedTimer();     
   //startRemainingTimer(600);     
