@@ -132,7 +132,7 @@ ProgressTracker::~ProgressTracker()
 	fileWriter.close();
 }
 
-
+/*
 
 int main(void)
 {
@@ -145,12 +145,12 @@ int main(void)
 	ProgressTracker* tracker1 = new ProgressTracker();
 	tracker1->putTmpFileName( "456tmp.list" );
 	tracker1->putNextFileNameIndexToCopy( (long)2452);
-/*
+
 
 	ProgressTracker* tracker2 = new ProgressTracker();
 	tracker1->putTmpFileName( "777tmp.list" );
 	tracker1->putNextFileNameIndexToCopy( (long)6532);
-	*/
+	
 	//tracker->putTmpFileName( "656tmp.list" );
 	//tracker->putTmpFileName( "856tmp.list" );
 	//cin>>tmp;
@@ -167,3 +167,4 @@ int main(void)
 	cout<< endl << "number of records" << tracker->getCopyInstanceCount();
 	return 1;
 }
+*/
