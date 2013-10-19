@@ -15,11 +15,10 @@ TuxCopy::TuxCopy(QDialog *parent) : QDialog(parent)
      connect(ui_copy.btnMore, SIGNAL(toggled(bool)),this,SLOT(toggleMore(bool)));
 
      elapsed=0;
-     startElapsedTimer();     
 
      displayList(); //Display File List in More Panel
  
-     QList<QStandardItem *>firstRow = prepareRow("/home/codepandora/cp.png","In Progress");  
+     QList<QStandardItem *>firstRow = prepareRow("/home/codepandora/cp.png","8.5 MB","In Progress");  
      model->appendRow(firstRow);     
 
 }
@@ -49,6 +48,8 @@ void TuxCopy::showDialog()
   }
 
   copyDialog->show();
+  startElapsedTimer();     
+  startRemainingTimer(600);     
 }
 
 void TuxCopy::toggleMore(bool state)
@@ -64,19 +65,21 @@ void TuxCopy::toggleMore(bool state)
 
 void TuxCopy::displayList()
 {
-     model = new QStandardItemModel(0,2,this); 
+     model = new QStandardItemModel(0,3,this); 
      model->setHorizontalHeaderItem(0, new QStandardItem(QString("File")));
-     model->setHorizontalHeaderItem(1, new QStandardItem(QString("Status")));
- 
+     model->setHorizontalHeaderItem(1, new QStandardItem(QString("Size")));
+     model->setHorizontalHeaderItem(2, new QStandardItem(QString("Status")));
+     
      ui_more.tableView->setModel(model);
 }
 
 
-QList<QStandardItem *> TuxCopy::prepareRow(const QString &first,const QString &second)
+QList<QStandardItem *> TuxCopy::prepareRow(const QString &first,const QString &second,const QString &third)
  {
      QList<QStandardItem *> rowItems;
      rowItems << new QStandardItem(first);
      rowItems << new QStandardItem(second);
+     rowItems << new QStandardItem(third);
      return rowItems;
  }
 
@@ -86,10 +89,19 @@ void TuxCopy::startElapsedTimer()
 	time.setHMS(0,0,0,0);
 	timer = new QTimer(this);
 	timer->start(1000);
-	connect(timer, SIGNAL(timeout()), this, SLOT(showTime()));
+	connect(timer, SIGNAL(timeout()), this, SLOT(showElapsedTime()));
 }
 
-void TuxCopy::showTime()
+void TuxCopy::startRemainingTimer(int eta)
+{
+	remainingTime = eta; 
+	time2.setHMS(0,0,0,0); 	
+	timer2 = new QTimer(this);
+	timer2->start(1000);
+	connect(timer2, SIGNAL(timeout()), this, SLOT(showRemainingTime()));
+}
+
+void TuxCopy::showElapsedTime()
 {
 	QTime newtime;
 	
@@ -97,4 +109,14 @@ void TuxCopy::showTime()
 	newtime=time.addSecs(elapsed);
 	QString text = newtime.toString("hh:mm:ss");
 	ui_copy.lblTimeElapsed->setText("Elapsed Time: " + text);
+}
+
+void TuxCopy::showRemainingTime()
+{
+	QTime newtime;
+	
+	remainingTime=remainingTime-1;
+	newtime=time.addSecs(remainingTime);
+	QString text = newtime.toString("hh:mm:ss");
+	ui_copy.lblTimeRemaining->setText("Remaining Time: " + text);
 } 

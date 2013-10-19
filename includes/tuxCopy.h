@@ -11,7 +11,7 @@
 
 class TuxCopy : public QDialog
 {
-	Q_OBJECT;
+	Q_OBJECT
 
 public:
 	TuxCopy(QDialog *parent=0);
@@ -24,16 +24,21 @@ public:
 	Ui::copyMore ui_more;
 	QTime time;
 	QTimer *timer;
+	QTime time2;
+	QTimer *timer2;
 	int elapsed;
+	int remainingTime;
 
 	void displayList(); //Display the File List table in More panel
-	QList<QStandardItem *> prepareRow(const QString&,const QString&); //Prepare a Tuple for File List Table
+	QList<QStandardItem *> prepareRow(const QString&,const QString&,const QString&); //Prepare a Tuple for File List Table
 	void startElapsedTimer();
+	void startRemainingTimer(int);
 
 private slots:
 	void showDialog(); //SLOT to display CopyDialog
 	void toggleMore(bool); //SLOT to toggle More panel display 
-	void showTime();
+	void showElapsedTime();
+	void showRemainingTime();
 
 };
 
