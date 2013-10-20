@@ -4,8 +4,17 @@
 #include<iostream>
 #include<string.h>
 #include<fstream>
+#include<stdlib.h>
+#include<iostream>
+#include<sstream>
+#include<string>
 
 using namespace std;
+
+struct copyInstanceRecord{
+	char name[11];
+	unsigned long lineNumber;
+};
 
 class ProgressTracker
 {
@@ -36,7 +45,7 @@ class ProgressTracker
 					offsetStorageOffset; // offset of copied offset part in a record respective to start of record
 		int recordLen, numberOfCopyInstances, currentCopyInstanceSequenceNumber;	// each record length in progress recording file
 		ifstream fileReader;	// file reading ifstream object 
-		ofstream fileWriter;	// file writing ofstream object
+		fstream fileWriter;	// file writing ofstream object
 		
 };
 

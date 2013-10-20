@@ -5,9 +5,10 @@
 copyInstance::copyInstance( const char* src[], int numberOfSources, const char* dest,void *tuxCopy):tmpFileLineCounter(1), currentFileSize(0), destination( "" ), isBuffer1Free(true), isBuffer2Free(true), fileNotCompleted(true)
 {
 
-//	TuxCopy *tux = (TuxCopy*)tuxCopy;
+	cout << endl<< "number of sources "<< numberOfSources;
+	TuxCopy *tux = (TuxCopy*)tuxCopy;
 //	((TuxCopy*)tuxCopy)->copyDialog->show();
-//	tux->copyDialog->show();
+	tux->copyDialog->show();
 	i = 0;
 	pool = new ThreadPool( 2 );
 	completionUpdater = new ThreadPool( 1 );
