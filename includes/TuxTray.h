@@ -36,6 +36,7 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
     QDialog *aboutDialog;
+    QDialog *optionsDialog;
     TuxCopy *tuxCopy;
     TuxMove *tuxMove;    
 

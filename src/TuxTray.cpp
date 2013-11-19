@@ -8,7 +8,9 @@
 TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
 {
   Ui::optionsDialog ui;
-  ui.setupUi(this);
+  optionsDialog = new QDialog();
+  ui.setupUi(optionsDialog);
+  //ui.setupUi(this);
 
   tuxCopy = new TuxCopy();
   tuxMove = new TuxMove();
@@ -28,8 +30,8 @@ TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
     else
       trayIcon->setToolTip("Invisible");
 
-    trayIcon->show(); 
-    
+    trayIcon->show();
+
 }
 
 /// Hide and destroy the icon in the systray
@@ -53,7 +55,7 @@ void TuxTray::createActions()
     connect(moveAction, SIGNAL(triggered()), tuxMove, SLOT(showDialog()));
 
     options = new QAction(tr("&Options"), this);
-    connect(options, SIGNAL(triggered()), this, SLOT(show()));
+    connect(options, SIGNAL(triggered()), optionsDialog, SLOT(show()));
  
     about = new QAction(tr("&About"), this);
     connect(about, SIGNAL(triggered()), aboutDialog, SLOT(show()));
@@ -73,12 +75,8 @@ void TuxTray::createTrayIcon()
     trayIconMenu->addAction(about);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quit);
- 
- 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
- 
- 
     connect(
             trayIcon,
             SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
@@ -96,8 +94,8 @@ void TuxTray::setIcon()
 
 void TuxTray::trayIconClicked(QSystemTrayIcon::ActivationReason reason)
 {
-    if(reason == QSystemTrayIcon::Trigger)
-        this->show();
+//    if(reason == QSystemTrayIcon::Trigger)
+  //      this->show();
 }
 
 void TuxTray::closeEvent(QCloseEvent *event)
@@ -105,8 +103,8 @@ void TuxTray::closeEvent(QCloseEvent *event)
     if (trayIcon->isVisible()) {
         trayIcon->showMessage(tr("Tux Transfer"),
         tr("Tux Transfer is running in the background..."));
-        hide();
- 
+        this->hide();
+        
         event->ignore(); // Don't let the event propagate to the base class
     }
 }

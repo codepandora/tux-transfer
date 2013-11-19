@@ -8,6 +8,7 @@
 #include <QTimer>
 #include "../ui/copyDialog.h"
 #include "../ui/copyMore.h"
+#include "CopyInstance.h"
 
 class TuxCopy : public QDialog
 {
@@ -33,6 +34,9 @@ public:
 	QList<QStandardItem *> prepareRow(const QString&,const QString&,const QString&); //Prepare a Tuple for File List Table
 	void startElapsedTimer();
 	void startRemainingTimer(int);
+
+private:
+	copyInstance* copyProcess;
 
 private slots:
 	void showDialog(); //SLOT to display CopyDialog

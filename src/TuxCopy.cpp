@@ -31,10 +31,11 @@ void TuxCopy::showDialog()
   if(srcDialog.exec())
   {
     srcList = srcDialog.selectedFiles();
-    QMessageBox msg;
-    msg.setText(srcList.at(0));
-    msg.exec();
+    //QMessageBox msg;
+    //msg.setText(srcList.at(0));
+    //msg.exec();
   }
+
 
   QFileDialog destDialog(this);
   destDialog.setFileMode(QFileDialog::Directory);
@@ -42,14 +43,27 @@ void TuxCopy::showDialog()
   if(destDialog.exec())
   {
     destList = destDialog.selectedFiles();
-    QMessageBox msg2;
-    msg2.setText(destList.at(0));
-    msg2.exec();
+    //QMessageBox msg2;
+    //msg2.setText(destList.at(0));
+    //msg2.exec();
   }
-
-  copyDialog->show();
+/*
+  int srcListLen = srcList.size();
+  char** list = new (char*)[srcListLen];
+  for( int cnt=0;cnt< srcListLen; cnt++ )
+  {
+      strcpy( list[cnt], srcList.at( cnt ).toLocal8Bit().data() );
+  }
+  */
+const char* srcs[] ={"/home/redlightning/Documents/Test"};
+  //  copyProcess = new copyInstance( const_cast<const char**>(list), srcListLen, destList.at( 0 ).toLocal8Bit().data(),this );
+  
   startElapsedTimer();     
-  startRemainingTimer(600);     
+  startRemainingTimer(8);     
+
+  copyProcess = new copyInstance( srcs,1, "/home/redlightning/Pictures",this );
+  
+  //copyDialog->hide();
 }
 
 void TuxCopy::toggleMore(bool state)

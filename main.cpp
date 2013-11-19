@@ -8,11 +8,12 @@
 
 int main(int argc, char *argv[])
  {
+ 	
      QApplication app(argc, argv);
      app.setAttribute(Qt::AA_DontShowIconsInMenus, false);    
 
-     TuxTray *icon = new TuxTray;
-     //icon->show();
+     TuxTray *icon = new TuxTray();
+     //icon->hide();
 
      return app.exec();
  }
