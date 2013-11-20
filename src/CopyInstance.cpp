@@ -7,7 +7,7 @@ copyInstance::copyInstance( const char* src[], int numberOfSources, const char* 
 	uiPtr = tuxCopy;
 	TuxCopy* tux = (TuxCopy*)tuxCopy;
 	//((TuxCopy*)tuxCopy)->copyDialog->show();
-	tux->copyDialog->show();
+	tux->copyDialog->show();   
 
 	i = 0;
 	pool = new ThreadPool( 2 );
@@ -119,6 +119,10 @@ void copyInstance::copyWork()
 	getline( fileList, destination );
 	
 		string tmp;
+		unsigned long fileSize;
+
+        TuxCopy* tux = (TuxCopy*)uiPtr;
+
 		while( getline( fileList, tmp ) )
 		{
 			//pool = new ThreadPool(1);
@@ -131,6 +135,10 @@ void copyInstance::copyWork()
 			}
 			else
 			{
+				tux->ui_copy.lblFileCurrent->setText(tmp.c_str());
+				this->isFile(tmp.c_str(),&fileSize);	
+			        QList<QStandardItem *>secondRow = tux->prepareRow(tmp.c_str(),QString::number(fileSize),"Completed");  
+			        tux->model->appendRow(secondRow); 
 				//cout<< "result - "<< resultantDestination<<endl;
 				writerStream1.open( resultantDestination.c_str(), ios::out | ios::binary );
 				//writerStream2.open( resultantDestination.c_str(), ios::in | ios::out | ios::binary );
@@ -205,7 +213,7 @@ void copyInstance::testCopy()
 		this->readerStream.close();
 		this->writerStream1.close();
 */
-			long completedBytes = 0;
+			unsigned long completedBytes = 0;
 			while( this->readerStream.read( this->buffer1, CHUNK_SIZE) )
 			{
 				//this->buf1Position = currentReadPosition;
@@ -217,10 +225,15 @@ void copyInstance::testCopy()
 				this->writerStream1.write( this->buffer1, CHUNK_SIZE );
 				this->writerStream1.flush();
 				completedBytes += 512;
-				int percent = (int)((completedBytes / this->currentFileSize)*100); 
+
+				tux->ui_copy.lblSizeCurrent->setText(QString::number(completedBytes/1000) + QString("KB / ") + QString::number(this->currentFileSize/1000) + QString("KB"));
+				
+				int percent = ((float)completedBytes /(float) this->currentFileSize)*100; 
+								
 				tux->ui_copy.pbarCurrent->setValue(percent);
-//				tux->ui_copy.pbarCurrent->setValue(this->currentFileSize % 100);
+
 				++( *(this->progressBar) );
+				
 			}
 		
 		this->readerStream.close();

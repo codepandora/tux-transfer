@@ -31,6 +31,8 @@ TuxTray::TuxTray(QDialog *parent) : QDialog(parent)
       trayIcon->setToolTip("Invisible");
 
     trayIcon->show();
+    
+    connect(ui_about.btnOk, SIGNAL(clicked()), aboutDialog, SLOT(close()));
 
 }
 
@@ -77,12 +79,8 @@ void TuxTray::createTrayIcon()
     trayIconMenu->addAction(quit);
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
-    connect(
-            trayIcon,
-            SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-            this,
-            SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason))
-           );
+    
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayIconClicked(QSystemTrayIcon::ActivationReason)));
 }
 
 void TuxTray::setIcon()

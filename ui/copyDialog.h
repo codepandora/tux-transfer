@@ -135,7 +135,7 @@ public:
         pbarOverall = new QProgressBar(copyDialog);
         pbarOverall->setObjectName(QStringLiteral("pbarOverall"));
         pbarOverall->setGeometry(QRect(15, 116, 396, 15));
-        pbarOverall->setValue(91);
+        pbarOverall->setValue(99);
         pbarCurrent = new QProgressBar(copyDialog);
         pbarCurrent->setObjectName(QStringLiteral("pbarCurrent"));
         pbarCurrent->setGeometry(QRect(15, 76, 396, 15));
@@ -205,7 +205,7 @@ public:
 
     void retranslateUi(QDialog *copyDialog)
     {
-        copyDialog->setWindowTitle(QApplication::translate("copyDialog", "Copying (0%)", 0));
+        copyDialog->setWindowTitle(QApplication::translate("copyDialog", "Copying (99%)", 0));
         btnMore->setText(QApplication::translate("copyDialog", "More", 0));
         btnPause->setText(QApplication::translate("copyDialog", "Pause", 0));
         btnSkip->setText(QApplication::translate("copyDialog", "Skip", 0));
@@ -218,11 +218,11 @@ public:
         lblFileCurrent->setText(QApplication::translate("copyDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Tux-transfer-github.zip</span></p></body></html>", 0));
         lblCurrent->setText(QApplication::translate("copyDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Current</span></p></body></html>", 0));
         lblSizeCurrent->setText(QApplication::translate("copyDialog", "20.0 MB / 27.5 MB", 0));
-        lblSizeOverall->setText(QApplication::translate("copyDialog", "168.5 MB / 182.5 MB", 0));
-        lblRate->setText(QApplication::translate("copyDialog", "41MB/s", 0));
+        lblSizeOverall->setText(QApplication::translate("copyDialog", "7.2 MB /7.2 MB", 0));
+        lblRate->setText(QApplication::translate("copyDialog", "28MB/s", 0));
         lblSpeed->setText(QApplication::translate("copyDialog", "Speed:", 0));
         lblOverall->setText(QApplication::translate("copyDialog", "<html><head/><body><p><span style=\" font-weight:600;\">Overall</span></p></body></html>", 0));
-        lblFileNo->setText(QApplication::translate("copyDialog", "8 / 10", 0));
+        lblFileNo->setText(QApplication::translate("copyDialog", "10/ 10", 0));
     } // retranslateUi
 
 };

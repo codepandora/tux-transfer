@@ -11,15 +11,14 @@ TuxCopy::TuxCopy(QDialog *parent) : QDialog(parent)
      more->setGeometry(0,171,421,181);
      ui_copy.btnMore->setCheckable(true);
      more->setVisible(false);
+
+     connect(ui_copy.btnCancel, SIGNAL(clicked()),copyDialog,SLOT(close()));
 	
      connect(ui_copy.btnMore, SIGNAL(toggled(bool)),this,SLOT(toggleMore(bool)));
 
      elapsed=0;
 
-     displayList(); //Display File List in More Panel
- 
-     QList<QStandardItem *>firstRow = prepareRow("/home/codepandora/cp.png","8.5 MB","In Progress");  
-     model->appendRow(firstRow);     
+     displayList(); //Display File List in More Panel 
 
 }
 
