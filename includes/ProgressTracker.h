@@ -4,8 +4,18 @@
 #include<iostream>
 #include<string.h>
 #include<fstream>
+#include<stdlib.h>
+#include<iostream>
+#include<sstream>
+#include<string>
 
 using namespace std;
+
+struct copyInstanceRecord{
+	char name[12];
+	unsigned long lineNumber;
+	bool completed;
+};
 
 class ProgressTracker
 {
@@ -13,7 +23,6 @@ class ProgressTracker
 	public:
 		ProgressTracker();
 		~ProgressTracker();
-		static ProgressTracker* getInstance();	// class is singlton
 		const char* getTmpFileName( );	// get tmpfile name of given index
 		long getCurrentlyCopyingFileNameIndex( ); // Get line number from tmpFile of file currently being copied
 		long getOffsetToCopyFrom(  );	// get offset till which the curretly file being copied has completed copying
@@ -27,7 +36,6 @@ class ProgressTracker
 	private:
 		const char* progressTrackerFile;	// file name to store all copying processes' progress
 		bool static instantiated;	// if the class has been instantiated
-		static ProgressTracker* progressTrackerPtr;	// pointer holding only object of class
 		
 		const int tmpFileNameLen, // length of tmpFile name
 					lineNumberLen, // length of line number part of record
@@ -36,7 +44,7 @@ class ProgressTracker
 					offsetStorageOffset; // offset of copied offset part in a record respective to start of record
 		int recordLen, numberOfCopyInstances, currentCopyInstanceSequenceNumber;	// each record length in progress recording file
 		ifstream fileReader;	// file reading ifstream object 
-		ofstream fileWriter;	// file writing ofstream object
+		fstream fileWriter;	// file writing ofstream object
 		
 };
 
